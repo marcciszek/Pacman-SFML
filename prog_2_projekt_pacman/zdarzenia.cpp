@@ -18,5 +18,17 @@ void Game::Event() {
                 break;
             }
         }
+        if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Right) {
+            gracz1.kierunek_aktualny = PRAWO;
+        }
+        if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Left) {
+            gracz1.kierunek_aktualny = LEWO;
+        }
+        if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Up) {
+            gracz1.kierunek_aktualny = GORA;
+        }
+        if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Down) {
+            gracz1.kierunek_aktualny = DOL;
+        }
     }
 }

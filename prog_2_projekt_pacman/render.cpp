@@ -4,6 +4,7 @@
 Grafika logo("grafiki/logo.png");
 Grafika start("grafiki/start.png");
 Grafika tlo("grafiki/plansza_3.png");
+PacMan gracz1;
 //Grafika opcje("grafika/opcje.png");
 
 void Game::Render()                                     // \brief Metoda renderujaca aplikacje
@@ -18,6 +19,7 @@ void Game::Render()                                     // \brief Metoda renderu
             Menu_Render();                              //render okna menu
             break;
         case 2:
+            gracz1.Ruch_postaci();
             Game_Render();                              //render okna gry
             break;
         }
@@ -31,7 +33,6 @@ void Game::Menu_Render()                                //Metoda renderujaca men
     logo.sprajt.setPosition(rozmiar_menu.x / (float)2 - (logo.tekstura.getSize().x / 4), rozmiar_menu.y / (float)10);                                  //ustawienie pozycji na srodku, zalezne od uzytej wczesniej skali
     this->okno_aplikacji.clear(sf::Color::White);
     this->okno_aplikacji.draw(logo.sprajt);
-
     start.sprajt.setScale(0.5, 0.5);
     start.sprajt.setPosition(rozmiar_menu.x / (float)2 - start.tekstura.getSize().x / 4, rozmiar_menu.y / (float)2 - (start.tekstura.getSize().y / 4)); //ustawienie pozycji na srodku, zalezne od uzytej wczesniej skali
     this->okno_aplikacji.draw(start.sprajt);
@@ -44,4 +45,5 @@ void Game::Game_Render()                                                    //Me
     tlo.sprajt.setPosition(rozmiar_gry.x / (float)2 - tlo.tekstura.getSize().x * skala / (float)2, 0);
     this->okno_aplikacji.clear(sf::Color::Blue);
     this->okno_aplikacji.draw(tlo.sprajt);
+    this->okno_aplikacji.draw(gracz1.postac.sprajt);
 }
