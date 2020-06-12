@@ -5,7 +5,8 @@ Grafika logo("grafiki/logo.png");
 Grafika start("grafiki/start.png");
 Grafika tlo("grafiki/plansza_3.png");
 PacMan gracz1;
-//Grafika opcje("grafika/opcje.png");
+punkty_boost boost[4];                                  //tablica boosterow (pozwalajace zjadac przeciwnikow)
+punkty punkt[241];                                      //tablica punktow do zbierania
 
 void Game::Render()                                     // \brief Metoda renderujaca aplikacje
 {
@@ -20,6 +21,7 @@ void Game::Render()                                     // \brief Metoda renderu
             break;
         case 2:
             gracz1.Ruch_postaci();
+            gracz1.Animacja_postaci();
             Game_Render();                              //render okna gry
             break;
         }
@@ -44,6 +46,14 @@ void Game::Game_Render()                                                    //Me
     tlo.sprajt.setScale(skala, skala);
     tlo.sprajt.setPosition(rozmiar_gry.x / (float)2 - tlo.tekstura.getSize().x * skala / (float)2, 0);
     this->okno_aplikacji.clear(sf::Color::Blue);
-    this->okno_aplikacji.draw(tlo.sprajt);
-    this->okno_aplikacji.draw(gracz1.postac.sprajt);
+    this->okno_aplikacji.draw(tlo.sprajt);                                  //rysowanie tla
+
+    for (int i = 0; i < 4; i++) {                                           //rysowanie boosterow
+        this->okno_aplikacji.draw(boost[i].punkt.sprajt);
+    }
+    for (int i = 0; i < 241; i++) {                                         //rysowanie punktow
+        this->okno_aplikacji.draw(punkt[i].punkt.sprajt);
+    }
+
+    this->okno_aplikacji.draw(gracz1.postac.sprajt);                        //rysowanie gracza
 }

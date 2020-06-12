@@ -1,8 +1,10 @@
 #include "Game.h"
 
 sf::Clock zegar_ruchu;
+sf::Clock zegar_animacji;
+sf::IntRect klatka_animacji(3, 3, 26, 26);                //startowy kwadrat postaci wycinany z arkusza tekstur
 
-const float predkosc_gracza = 0.001f;
+const float predkosc_gracza = 0.0001f;
 
 void PacMan::Ruch_postaci() {
 
@@ -66,17 +68,17 @@ void PacMan::Ruch_postaci() {
                     kierunek_aktualny = STOP;                                                                                                                           //zatrzymanie gracza jesli nie moze poruszac sie dalej w zadanym kierunku
                     kierunek_nastepny = STOP;
                 }
-                else if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '3')
+                else if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '3')                                                                         //sprawdzenie czy gracz jest przed punktem teleportujacym
                 {
-                    //std::cout << "prawo " << pozycja_rysowania.x << " " << pozycja_rysowania.y << std::endl;
                     pozycja_rysowania.x = (float)144.994;
                     pozycja_rysowania.y = (float)267.689;
-                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);                                                                                //przeniesienie gracza na odpowiednie miejsce
                 }
                 else if (odleglosc_od_kratki_y >= 0.49f and odleglosc_od_kratki_y <= 0.51f)
                 {
-                    pozycja_rysowania.x += (float)0.2;                                                                                                                         //
+                    pozycja_rysowania.x += (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x , pozycja_rysowania.y);                                                                               //zmiana pozycji gracza
+                    zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);                                                                                    //funkcja zbirajaca punkty
                 }
             }
             else
@@ -86,7 +88,6 @@ void PacMan::Ruch_postaci() {
             }
             zegar_ruchu.restart();
         }
-        std::cout << kierunek_aktualny <<" "<<kierunek_nastepny<< " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     case LEWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
@@ -100,8 +101,6 @@ void PacMan::Ruch_postaci() {
                 }
                 else if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '2')
                 {
-                    //std::cout << "lewo " << pozycja_rysowania.x <<" "<< pozycja_rysowania.y << std::endl;
-                    //postac.sprajt.setPosition(629.015, 267.689);
                     pozycja_rysowania.x = (float)629.015;
                     pozycja_rysowania.y = (float)267.689;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
@@ -110,6 +109,7 @@ void PacMan::Ruch_postaci() {
                 {
                     pozycja_rysowania.x -= (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+                    zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -119,7 +119,6 @@ void PacMan::Ruch_postaci() {
             }
             zegar_ruchu.restart();
         }
-        std::cout << kierunek_aktualny << " " << kierunek_nastepny << " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     case DOL:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
@@ -135,6 +134,7 @@ void PacMan::Ruch_postaci() {
                 {
                     pozycja_rysowania.y += (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+                    zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -144,7 +144,6 @@ void PacMan::Ruch_postaci() {
             }
             zegar_ruchu.restart();
         }
-        std::cout << kierunek_aktualny << " " << kierunek_nastepny << " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     case GORA:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
@@ -160,6 +159,7 @@ void PacMan::Ruch_postaci() {
                 {
                     pozycja_rysowania.y -= (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+                    zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -169,7 +169,79 @@ void PacMan::Ruch_postaci() {
             }
             zegar_ruchu.restart();
         }
-        std::cout << kierunek_aktualny << " " << kierunek_nastepny << " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     }
+}
+
+//obluga animacji postaci
+void PacMan::Animacja_postaci() {
+    if (zegar_animacji.getElapsedTime().asSeconds() >= 0.1f) {
+        switch (kierunek_aktualny) {
+        case PRAWO:
+            klatka_animacji.top = 3;               //koordynaty gornej krawedzi klatki
+            if (klatka_animacji.left == 81) {      //sprawdzenie czy animacja doszla do ostatniej klatki
+                klatka_animacji.left = 3;          //powrot na pierwsza klatke animacji danego kierunku
+            }
+            else klatka_animacji.left += 26;       //skok do nastepnej klatki animacji
+            break;
+        case LEWO:
+            klatka_animacji.top = 32;
+            if (klatka_animacji.left == 81) {
+                klatka_animacji.left = 3;
+            }
+            else klatka_animacji.left += 26;
+            break;
+        case GORA:
+            klatka_animacji.top = 61;
+            if (klatka_animacji.left == 81) {
+                klatka_animacji.left = 3;
+            }
+            else klatka_animacji.left += 26;
+            break;
+        case DOL:
+            klatka_animacji.top = 90;
+            if (klatka_animacji.left == 81) {
+                klatka_animacji.left = 3;
+            }
+            else klatka_animacji.left += 26;
+            break;
+        }
+        postac.sprajt.setTextureRect(klatka_animacji);  //ustawienie danej klatki animacji
+        zegar_animacji.restart();
+    }
+}
+
+void PacMan::zbieranie_pkt(int pozycja_x, int pozycja_y) {
+    if (poziom_1[pozycja_y][pozycja_x] == '#')
+    {
+        std::cout << "TEST" << std::endl;
+        for (int i = 0; i < 241; i++) {
+            if (pozycja_x == punkt[i].pozycja_logiczna.x && pozycja_y == punkt[i].pozycja_logiczna.y) {
+                punkt[i].Ustawienie(0, 0);
+                break;
+            }
+        }
+    }
+}
+
+void punkty::Ustawienie(int x, int y) {
+    float szerokosc_boku = ((float)rozmiar_gry.x - tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y)) / (float)2;                //szerokosc obszaru miedzy mapa a krawedzia okna
+    float szerokosc_kratki = tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)28;                                      //szerokosc kratki na mapie logicznej
+    float wysokosc_kratki = tlo.tekstura.getSize().y * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)31;                                       //wysokosc kratki na mapie logicznej
+    pozycja_logiczna.x = x;
+    pozycja_logiczna.y = y;
+    pozycja_wzgledna.x = x * szerokosc_kratki + szerokosc_boku + 0.5f * szerokosc_kratki;
+    pozycja_wzgledna.y = y * wysokosc_kratki + 0.5f * wysokosc_kratki;
+    punkt.sprajt.setPosition(pozycja_wzgledna.x, pozycja_wzgledna.y);
+}
+
+void punkty_boost::Ustawienie(int x, int y) {
+    float szerokosc_boku = ((float)rozmiar_gry.x - tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y)) / (float)2;                //szerokosc obszaru miedzy mapa a krawedzia okna
+    float szerokosc_kratki = tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)28;                                      //szerokosc kratki na mapie logicznej
+    float wysokosc_kratki = tlo.tekstura.getSize().y * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)31;                                       //wysokosc kratki na mapie logicznej
+    pozycja_logiczna.x = x;
+    pozycja_logiczna.y = y;
+    pozycja_wzgledna.x = x * szerokosc_kratki + szerokosc_boku;
+    pozycja_wzgledna.y = y * wysokosc_kratki;
+    punkt.sprajt.setPosition(pozycja_wzgledna.x, pozycja_wzgledna.y);
 }

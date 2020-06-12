@@ -35,15 +35,16 @@ public:
     }
 };
 
-
-// \brief Klasa za pomoca ktorej mozna latwo stworzyc grafike gotowa do wyswietlenia podajac lokalizacje tekstury
+/////////////////////////////////////////////////////////////////
+// \brief Klasa za pomoca ktorej mozna latwo stworzyc grafike 
+// gotowa do wyswietlenia podajac lokalizacje tekstury
 // \param przyklad: Grafika obrazek("lokalizacja/tekstura.png");
+/////////////////////////////////////////////////////////////////
 class Grafika
 {
 public:
     sf::Texture tekstura;                         //objekt przechowujacy teksture
     sf::Sprite sprajt;                            //objekt do wyswietlenia na ekranie
-    //Grafika() {};
     Grafika(std::string plik)
     {                                    
         this->tekstura.loadFromFile(plik);        //Zaladowanie tekstury do zmiennej
@@ -51,7 +52,9 @@ public:
     }
 };
 
-//Klasa postaci ktora steruje gracz
+/////////////////////////////////////////////////////////////////
+// \brief Klasa opisujaca postac gracza
+/////////////////////////////////////////////////////////////////
 class PacMan
 {
 public:
@@ -67,6 +70,12 @@ public:
         postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);     //ustawienie pozycji gracza
     }
     void Ruch_postaci();
+    void Animacja_postaci();
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda zbierajaca punkty i usuwajaca je z planszy
+    // \param pozycja logiczna gracza x, pozycja logiczna gracza y
+    /////////////////////////////////////////////////////////////////
+    void zbieranie_pkt(int pozycja_x, int pozycja_y);
 };
 class Blinky  //czerwony przeciwnik (podaza za pacmanem)
 {
@@ -86,6 +95,45 @@ class Inky  //blekitny przeciwnik (zmieniajace sie decyzje)
 class Clyde //pomaranczowy przeciwnik (goni, ale gdy jest blisko pacmana zaczyna uciekac)
 {
 
+};
+/////////////////////////////////////////////////////////////////
+// \brief Klasa boosterow wyswietlanych na mapie,
+// pozwalaja graczowi zjadac przeciwnikow
+/////////////////////////////////////////////////////////////////
+class punkty_boost {
+public:
+    Grafika punkt = Grafika("grafiki/sprite_sheet.png");
+    sf::Vector2i pozycja_wzgledna;
+    sf::Vector2i pozycja_logiczna;
+    punkty_boost() {
+        punkt.sprajt.setTextureRect(sf::IntRect(9, 360, 16, 16));
+    }
+    
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda ustawia parametry boostera w oparciu o tablice logiczna
+    // oraz pozycje na mapie rysowanej
+    // \param pozycja logiczna x boostera, pozycja logiczna y boostera
+    /////////////////////////////////////////////////////////////////
+    void Ustawienie(int x, int y);
+};
+/////////////////////////////////////////////////////////////////
+// \brief Klasa punktow wyswietlanych na mapie,
+// po zebraniu wszystkich koniec gry (wygrana)
+/////////////////////////////////////////////////////////////////
+class punkty {
+public:
+    Grafika punkt = Grafika("grafiki/sprite_sheet.png");
+    sf::Vector2i pozycja_wzgledna;
+    sf::Vector2i pozycja_logiczna;
+    punkty() {
+        punkt.sprajt.setTextureRect(sf::IntRect(47, 366, 3, 3));
+    }
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda ustawia parametry punktu w oparciu o tablice logiczna
+    // oraz pozycje na mapie rysowanej
+    // \param pozycja logiczna x punktu, pozycja logiczna y punktu
+    /////////////////////////////////////////////////////////////////
+    void Ustawienie(int x, int y);
 };
 
 //Tablica logiczna
@@ -140,3 +188,5 @@ extern Grafika logo;
 extern Grafika tlo;
 extern bool czy_wlaczona;                       //Zmienna logiczna -> potrzeba do petli glownej programu
 extern int typ_menu;                            //zmienna odpowiadajaca za typ okna: 1 - MENU; 2- GRA; 3 - OPCJE
+extern punkty_boost boost[4];
+extern punkty punkt[241];
