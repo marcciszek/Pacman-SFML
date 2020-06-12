@@ -19,16 +19,16 @@ void Game::Event() {
             }
         }
         if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Right) {
-            gracz1.kierunek_aktualny = PRAWO;
+            gracz1.kierunek_nastepny = PRAWO;
         }
         if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Left) {
-            gracz1.kierunek_aktualny = LEWO;
+            gracz1.kierunek_nastepny = LEWO;
         }
         if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Up) {
-            gracz1.kierunek_aktualny = GORA;
+            gracz1.kierunek_nastepny = GORA;
         }
         if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Down) {
-            gracz1.kierunek_aktualny = DOL;
+            gracz1.kierunek_nastepny = DOL;
         }
     }
 }

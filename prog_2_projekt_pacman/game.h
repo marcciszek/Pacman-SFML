@@ -55,14 +55,15 @@ public:
 class PacMan
 {
 public:
-    sf::Vector2i pozycja_rysowania;                                              //koordynaty pozycji gracza
+    sf::Vector2f pozycja_rysowania;                                              //koordynaty pozycji gracza
     Grafika postac = Grafika("grafiki/sprite_sheet.png");
-    Kierunki kierunek_aktualny;                                                  //kierunek aktualnie wybrany przez gracza
+    Kierunki kierunek_aktualny;                                                  //kierunek wykonywany przez program { STOP = 0, LEWO, PRAWO, GORA, DOL }
+    Kierunki kierunek_nastepny;                                                  //nastepny kierunek zamierzany przez gracza { STOP = 0, LEWO, PRAWO, GORA, DOL }
     PacMan() {
         postac.sprajt.setTextureRect(sf::IntRect(3, 3, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
         //Pozycje startowe gracza
         pozycja_rysowania.x = 387;
-        pozycja_rysowania.y = 442;
+        pozycja_rysowania.y = 441.9;
         postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);     //ustawienie pozycji gracza
     }
     void Ruch_postaci();

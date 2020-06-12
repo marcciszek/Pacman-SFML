@@ -36,7 +36,7 @@ void Game::Menu_Render()                                //Metoda renderujaca men
     start.sprajt.setScale(0.5, 0.5);
     start.sprajt.setPosition(rozmiar_menu.x / (float)2 - start.tekstura.getSize().x / 4, rozmiar_menu.y / (float)2 - (start.tekstura.getSize().y / 4)); //ustawienie pozycji na srodku, zalezne od uzytej wczesniej skali
     this->okno_aplikacji.draw(start.sprajt);
-}//czy this potrzebne?
+}
 
 void Game::Game_Render()                                                    //Metoda renderujaca okno gry
 {

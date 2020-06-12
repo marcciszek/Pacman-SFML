@@ -2,7 +2,7 @@
 
 sf::Clock zegar_ruchu;
 
-const float predkosc_gracza = 0.01;
+const float predkosc_gracza = 0.001f;
 
 void PacMan::Ruch_postaci() {
 
@@ -14,30 +14,79 @@ void PacMan::Ruch_postaci() {
     float odleglosc_od_kratki_x = pozycja_wzgledna_x - floor(pozycja_wzgledna_x);                                                                           //odleglosc horyzontalna od srodka gracza do krawedzi kratki logicznej
     float odleglosc_od_kratki_y = pozycja_wzgledna_y - floor(pozycja_wzgledna_y);                                                                           //odleglosc wertykalna od srodka gracza do krawedzi kratki logicznej
 
-
-    //osluga poruszania sie w zaleznosci od wybranego kierunku i
-    //sprawdzenie mozliwosci poruszania sie gracza po mapie logicznej
+    //switch ten odpowiedzialny jest za sprawdzenie, czy ostatni kierunek wybrany przez gracza jest mozliwy do realizacji, jesli tak to ustawia odpowiedni kierunek postaci
+    switch (this->kierunek_nastepny)
+    {
+    case PRAWO:
+        if (odleglosc_od_kratki_y >= 0.495f and odleglosc_od_kratki_y <= 0.505f)                                                                                   //sprawdzenie czy jestesmy na srodku kratki
+        {
+            if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] != '-' and poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] != '9')   //sprawdzenie czy mozliwy jest ruch
+            {
+            kierunek_aktualny = kierunek_nastepny;                                                                                                                 //ustawienie kierunku postaci na ostatnio wybrany przez gracza
+            }
+        }
+        break;
+    case LEWO:
+        if (odleglosc_od_kratki_y >= 0.495f and odleglosc_od_kratki_y <= 0.505f)
+        {
+            if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] != '-' and poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] != '9')
+            {
+            kierunek_aktualny = kierunek_nastepny;
+            }
+        }
+        break;
+    case DOL:
+        if (odleglosc_od_kratki_x >= 0.495f and odleglosc_od_kratki_x <= 0.505f)
+        {
+            if (poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] != '-' and poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] != '9')
+            {
+            kierunek_aktualny = kierunek_nastepny;
+            }
+        }
+        break;
+    case GORA:
+        if (odleglosc_od_kratki_x >= 0.495f and odleglosc_od_kratki_x <= 0.505f)
+        {
+            if (poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] != '-' and poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] != '9')
+            {
+            kierunek_aktualny = kierunek_nastepny;
+            }
+        }
+        break;
+    }
+    //switch ktory realzuje przesuwanie sie postaci
     switch (this->kierunek_aktualny) {
     case PRAWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
-            if (odleglosc_od_kratki_x >= 0.5)
+            if (odleglosc_od_kratki_x >= 0.5f)                                                                                                                          //sprawdzenie czy gracz jest w polowie kratki
             {
                 if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '-' || poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '9')     //Sprawdzenie mozliwosciu ruchu
                 {
                     kierunek_aktualny = STOP;                                                                                                                           //zatrzymanie gracza jesli nie moze poruszac sie dalej w zadanym kierunku
+                    kierunek_nastepny = STOP;
                 }
-                else
+                else if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '3')
                 {
-                    postac.sprajt.setPosition(++pozycja_rysowania.x , pozycja_rysowania.y);                                                                             //zmiana pozycji gracza
+                    //std::cout << "prawo " << pozycja_rysowania.x << " " << pozycja_rysowania.y << std::endl;
+                    pozycja_rysowania.x = 144.994;
+                    pozycja_rysowania.y = 267.689;
+                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+                }
+                else if (odleglosc_od_kratki_y >= 0.49f and odleglosc_od_kratki_y <= 0.51f)
+                {
+                    pozycja_rysowania.x += 0.2;                                                                                                                         //
+                    postac.sprajt.setPosition(pozycja_rysowania.x , pozycja_rysowania.y);                                                                               //zmiana pozycji gracza
                 }
             }
             else
             {
-                postac.sprajt.setPosition(++pozycja_rysowania.x, pozycja_rysowania.y);                                                                                  //zmiana pozycji gracza
+                pozycja_rysowania.x += 0.2;
+                postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);                                                                                    //zmiana pozycji gracza
             }
             zegar_ruchu.restart();
         }
+        std::cout << kierunek_aktualny <<" "<<kierunek_nastepny<< " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     case LEWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
@@ -47,18 +96,30 @@ void PacMan::Ruch_postaci() {
                 if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '-' || poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '9')
                 {
                     kierunek_aktualny = STOP;
+                    kierunek_nastepny = STOP;
                 }
-                else
+                else if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '2')
                 {
-                    postac.sprajt.setPosition(--pozycja_rysowania.x, pozycja_rysowania.y);
+                    //std::cout << "lewo " << pozycja_rysowania.x <<" "<< pozycja_rysowania.y << std::endl;
+                    //postac.sprajt.setPosition(629.015, 267.689);
+                    pozycja_rysowania.x = 629.015;
+                    pozycja_rysowania.y = 267.689;
+                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+                }
+                else if (odleglosc_od_kratki_y >= 0.49f and odleglosc_od_kratki_y <= 0.51f)
+                {
+                    pozycja_rysowania.x -= 0.2;
+                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
             }
             else
             {
-                postac.sprajt.setPosition(--pozycja_rysowania.x, pozycja_rysowania.y);
+                pozycja_rysowania.x -= 0.2;
+                postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
             }
             zegar_ruchu.restart();
         }
+        std::cout << kierunek_aktualny << " " << kierunek_nastepny << " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     case DOL:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
@@ -68,18 +129,22 @@ void PacMan::Ruch_postaci() {
                 if (poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] == '-' || poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] == '9')
                 {
                     kierunek_aktualny = STOP;
+                    kierunek_nastepny = STOP;
                 }
-                else
+                else if (odleglosc_od_kratki_x >= 0.49f and odleglosc_od_kratki_x <= 0.51f)
                 {
-                    postac.sprajt.setPosition(pozycja_rysowania.x, ++pozycja_rysowania.y);
+                    pozycja_rysowania.y += 0.2;
+                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
             }
             else
             {
-                postac.sprajt.setPosition(pozycja_rysowania.x, ++pozycja_rysowania.y);
+                pozycja_rysowania.y += 0.2;
+                postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
             }
             zegar_ruchu.restart();
         }
+        std::cout << kierunek_aktualny << " " << kierunek_nastepny << " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     case GORA:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
@@ -89,18 +154,22 @@ void PacMan::Ruch_postaci() {
                 if (poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] == '-' || poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] == '9')
                 {
                     kierunek_aktualny = STOP;
+                    kierunek_nastepny = STOP;
                 }
-                else
+                else if (odleglosc_od_kratki_x >= 0.49f and odleglosc_od_kratki_x <= 0.51f)
                 {
-                    postac.sprajt.setPosition(pozycja_rysowania.x, --pozycja_rysowania.y);
+                    pozycja_rysowania.y -= 0.2;
+                    postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
             }
             else
             {
-                postac.sprajt.setPosition(pozycja_rysowania.x, --pozycja_rysowania.y);
+                pozycja_rysowania.y -= 0.2;
+                postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
             }
             zegar_ruchu.restart();
         }
+        std::cout << kierunek_aktualny << " " << kierunek_nastepny << " " << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << " " << odleglosc_od_kratki_x << " " << odleglosc_od_kratki_y << std::endl;
         break;
     }
 }
