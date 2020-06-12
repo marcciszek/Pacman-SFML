@@ -69,19 +69,19 @@ void PacMan::Ruch_postaci() {
                 else if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '3')
                 {
                     //std::cout << "prawo " << pozycja_rysowania.x << " " << pozycja_rysowania.y << std::endl;
-                    pozycja_rysowania.x = 144.994;
-                    pozycja_rysowania.y = 267.689;
+                    pozycja_rysowania.x = (float)144.994;
+                    pozycja_rysowania.y = (float)267.689;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
                 else if (odleglosc_od_kratki_y >= 0.49f and odleglosc_od_kratki_y <= 0.51f)
                 {
-                    pozycja_rysowania.x += 0.2;                                                                                                                         //
+                    pozycja_rysowania.x += (float)0.2;                                                                                                                         //
                     postac.sprajt.setPosition(pozycja_rysowania.x , pozycja_rysowania.y);                                                                               //zmiana pozycji gracza
                 }
             }
             else
             {
-                pozycja_rysowania.x += 0.2;
+                pozycja_rysowania.x += (float)0.2;
                 postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);                                                                                    //zmiana pozycji gracza
             }
             zegar_ruchu.restart();
@@ -102,19 +102,19 @@ void PacMan::Ruch_postaci() {
                 {
                     //std::cout << "lewo " << pozycja_rysowania.x <<" "<< pozycja_rysowania.y << std::endl;
                     //postac.sprajt.setPosition(629.015, 267.689);
-                    pozycja_rysowania.x = 629.015;
-                    pozycja_rysowania.y = 267.689;
+                    pozycja_rysowania.x = (float)629.015;
+                    pozycja_rysowania.y = (float)267.689;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
                 else if (odleglosc_od_kratki_y >= 0.49f and odleglosc_od_kratki_y <= 0.51f)
                 {
-                    pozycja_rysowania.x -= 0.2;
+                    pozycja_rysowania.x -= (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
             }
             else
             {
-                pozycja_rysowania.x -= 0.2;
+                pozycja_rysowania.x -= (float)0.2;
                 postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
             }
             zegar_ruchu.restart();
@@ -133,13 +133,13 @@ void PacMan::Ruch_postaci() {
                 }
                 else if (odleglosc_od_kratki_x >= 0.49f and odleglosc_od_kratki_x <= 0.51f)
                 {
-                    pozycja_rysowania.y += 0.2;
+                    pozycja_rysowania.y += (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
             }
             else
             {
-                pozycja_rysowania.y += 0.2;
+                pozycja_rysowania.y += (float)0.2;
                 postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
             }
             zegar_ruchu.restart();
@@ -158,13 +158,13 @@ void PacMan::Ruch_postaci() {
                 }
                 else if (odleglosc_od_kratki_x >= 0.49f and odleglosc_od_kratki_x <= 0.51f)
                 {
-                    pozycja_rysowania.y -= 0.2;
+                    pozycja_rysowania.y -= (float)0.2;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                 }
             }
             else
             {
-                pozycja_rysowania.y -= 0.2;
+                pozycja_rysowania.y -= (float)0.2;
                 postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
             }
             zegar_ruchu.restart();

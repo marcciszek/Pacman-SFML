@@ -63,7 +63,7 @@ public:
         postac.sprajt.setTextureRect(sf::IntRect(3, 3, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
         //Pozycje startowe gracza
         pozycja_rysowania.x = 387;
-        pozycja_rysowania.y = 441.9;
+        pozycja_rysowania.y = (float)441.9;
         postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);     //ustawienie pozycji gracza
     }
     void Ruch_postaci();
