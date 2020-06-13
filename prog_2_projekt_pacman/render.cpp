@@ -5,6 +5,8 @@ Grafika logo("grafiki/logo.png");
 Grafika start("grafiki/start.png");
 Grafika tlo("grafiki/plansza_3.png");
 PacMan gracz1;
+Blinky czerwony;
+Pinky rozowy;
 punkty_boost boost[4];                                  //tablica boosterow (pozwalajace zjadac przeciwnikow)
 punkty punkt[242];                                      //tablica punktow do zbierania
 
@@ -20,6 +22,8 @@ void Game::Render()                                     // \brief Metoda renderu
             Menu_Render();                              //render okna menu
             break;
         case 2:
+            czerwony.Ruch();
+            rozowy.Ruch();
             gracz1.Ruch_postaci();
             gracz1.Animacja_postaci();
             Game_Render();                              //render okna gry
@@ -54,6 +58,7 @@ void Game::Game_Render()                                                    //Me
     for (int i = 0; i < 242; i++) {                                         //rysowanie punktow
         this->okno_aplikacji.draw(punkt[i].punkt.sprajt);
     }
-
+    this->okno_aplikacji.draw(czerwony.czerwony.sprajt);
+    this->okno_aplikacji.draw(rozowy.rozowy.sprajt);
     this->okno_aplikacji.draw(gracz1.postac.sprajt);                        //rysowanie gracza
 }
