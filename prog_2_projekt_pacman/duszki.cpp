@@ -944,36 +944,73 @@ void Clyde::Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y) {
 }
 
 void Clyde::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz) {
+
+    float odleglosc_od_gracza = sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz));
+
     //Odleglosci dla kazdego kierunku 0-GORA 1-LEWO 2-DOL 3-PRAWO
     float najmniejsza_odleglosc = std::numeric_limits<float>::max();
     //std::cout << najmniejsza_odleglosc << std::endl;
-    if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
-        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y - 1) - pozycja_y_gracz) * abs((pozycja_y - 1) - pozycja_y_gracz))) {
-            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y - 1) - pozycja_y_gracz) * abs((pozycja_y - 1) - pozycja_y_gracz));
-            //std::cout << "GORA: " << najmniejsza_odleglosc << std::endl;
-            kierunek_nastepny = GORA;
-        }
-    }
-    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
 
-        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_x_gracz) * abs(pozycja_x - 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz))) {
-            najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_x_gracz) * abs(pozycja_x - 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz));
-            //std::cout << "LEWO: " << najmniejsza_odleglosc << std::endl;
-            kierunek_nastepny = LEWO;
+    if (odleglosc_od_gracza >= 8) {     //DROGA DO GRACZA
+        if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
+            if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y - 1) - pozycja_y_gracz) * abs((pozycja_y - 1) - pozycja_y_gracz))) {
+                najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y - 1) - pozycja_y_gracz) * abs((pozycja_y - 1) - pozycja_y_gracz));
+                //std::cout << "GORA: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = GORA;
+            }
+        }
+        if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
+
+            if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_x_gracz) * abs(pozycja_x - 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz))) {
+                najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_x_gracz) * abs(pozycja_x - 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz));
+                //std::cout << "LEWO: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = LEWO;
+            }
+        }
+        if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
+            if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y + 1) - pozycja_y_gracz) * abs((pozycja_y + 1) - pozycja_y_gracz))) {
+                najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y + 1) - pozycja_y_gracz) * abs((pozycja_y + 1) - pozycja_y_gracz));
+                //std::cout << "DOL: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = DOL;
+            }
+        }
+        if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
+            if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_x_gracz) * abs(pozycja_x + 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz))) {
+                najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_x_gracz) * abs(pozycja_x + 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz));
+                //std::cout << "PRAWO: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = PRAWO;
+            }
         }
     }
-    if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
-        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y + 1) - pozycja_y_gracz) * abs((pozycja_y + 1) - pozycja_y_gracz))) {
-            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_x_gracz) * abs(pozycja_x - pozycja_x_gracz) + abs((pozycja_y + 1) - pozycja_y_gracz) * abs((pozycja_y + 1) - pozycja_y_gracz));
-            //std::cout << "DOL: " << najmniejsza_odleglosc << std::endl;
-            kierunek_nastepny = DOL;
+    else {      //DROGA DO ROGU
+        if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
+            if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_rog.x) * abs(pozycja_x - pozycja_rog.x) + abs((pozycja_y - 1) - pozycja_rog.y) * abs((pozycja_y - 1) - pozycja_rog.y))) {
+                najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_rog.x) * abs(pozycja_x - pozycja_rog.x) + abs((pozycja_y - 1) - pozycja_rog.y) * abs((pozycja_y - 1) - pozycja_rog.y));
+                //std::cout << "GORA: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = GORA;
+            }
         }
-    }
-    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
-        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_x_gracz) * abs(pozycja_x + 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz))) {
-            najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_x_gracz) * abs(pozycja_x + 1 - pozycja_x_gracz) + abs(pozycja_y - pozycja_y_gracz) * abs(pozycja_y - pozycja_y_gracz));
-            //std::cout << "PRAWO: " << najmniejsza_odleglosc << std::endl;
-            kierunek_nastepny = PRAWO;
+        if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
+
+            if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_rog.x) * abs(pozycja_x - 1 - pozycja_rog.x) + abs(pozycja_y - pozycja_rog.y) * abs(pozycja_y - pozycja_rog.y))) {
+                najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_rog.x) * abs(pozycja_x - 1 - pozycja_rog.x) + abs(pozycja_y - pozycja_rog.y) * abs(pozycja_y - pozycja_rog.y));
+                //std::cout << "LEWO: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = LEWO;
+            }
+        }
+        if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
+            if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_rog.x) * abs(pozycja_x - pozycja_rog.x) + abs((pozycja_y + 1) - pozycja_rog.y) * abs((pozycja_y + 1) - pozycja_rog.y))) {
+                najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_rog.x) * abs(pozycja_x - pozycja_rog.x) + abs((pozycja_y + 1) - pozycja_rog.y) * abs((pozycja_y + 1) - pozycja_rog.y));
+                //std::cout << "DOL: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = DOL;
+            }
+        }
+        if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
+            if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_rog.x) * abs(pozycja_x + 1 - pozycja_rog.x) + abs(pozycja_y - pozycja_rog.y) * abs(pozycja_y - pozycja_rog.y))) {
+                najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_rog.x) * abs(pozycja_x + 1 - pozycja_rog.x) + abs(pozycja_y - pozycja_rog.y) * abs(pozycja_y - pozycja_rog.y));
+                //std::cout << "PRAWO: " << najmniejsza_odleglosc << std::endl;
+                kierunek_nastepny = PRAWO;
+            }
         }
     }
 }

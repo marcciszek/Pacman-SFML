@@ -155,6 +155,7 @@ class Clyde //pomaranczowy przeciwnik (goni, ale gdy jest blisko pacmana zaczyna
 {
 public:
     sf::Vector2f pozycja_rysowania;
+    sf::Vector2f pozycja_rog;
     Grafika pomaranczowy = Grafika("grafiki/sprite_sheet.png");
     Kierunki kierunek_aktualny;
     Kierunki kierunek_nastepny;
@@ -165,6 +166,8 @@ public:
         pomaranczowy.sprajt.setTextureRect(sf::IntRect(3, 242, 26, 26));
         pozycja_rysowania.x = 427;
         pozycja_rysowania.y = (float)268;
+        pozycja_rog.x = 3.5;
+        pozycja_rog.y = 31.5;
         pomaranczowy.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
     }
     void Ruch();
