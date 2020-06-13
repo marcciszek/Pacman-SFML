@@ -6,7 +6,7 @@
 //wyswietlanie ilosci zebranych punktow
 
 //bugi
-//blokowanie przy ruchu gora/dol/lewo
+//blad z animacja w lewo              ??????
 
 int typ_menu = 1;                               //Zmienna przelacznika typu menu -> 1: MENU; 2: GRA; 3: OPCJE;
 bool czy_wlaczona = true;                       //Zmienna logiczna -> potrzeba do petli glownej programu

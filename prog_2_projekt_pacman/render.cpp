@@ -6,7 +6,7 @@ Grafika start("grafiki/start.png");
 Grafika tlo("grafiki/plansza_3.png");
 PacMan gracz1;
 punkty_boost boost[4];                                  //tablica boosterow (pozwalajace zjadac przeciwnikow)
-punkty punkt[241];                                      //tablica punktow do zbierania
+punkty punkt[242];                                      //tablica punktow do zbierania
 
 void Game::Render()                                     // \brief Metoda renderujaca aplikacje
 {
@@ -51,7 +51,7 @@ void Game::Game_Render()                                                    //Me
     for (int i = 0; i < 4; i++) {                                           //rysowanie boosterow
         this->okno_aplikacji.draw(boost[i].punkt.sprajt);
     }
-    for (int i = 0; i < 241; i++) {                                         //rysowanie punktow
+    for (int i = 0; i < 242; i++) {                                         //rysowanie punktow
         this->okno_aplikacji.draw(punkt[i].punkt.sprajt);
     }
 

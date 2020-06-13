@@ -62,6 +62,7 @@ public:
     Grafika postac = Grafika("grafiki/sprite_sheet.png");
     Kierunki kierunek_aktualny;                                                  //kierunek wykonywany przez program { STOP = 0, LEWO, PRAWO, GORA, DOL }
     Kierunki kierunek_nastepny;                                                  //nastepny kierunek zamierzany przez gracza { STOP = 0, LEWO, PRAWO, GORA, DOL }
+    int Ilosc_punktow = 0;
     PacMan() {
         postac.sprajt.setTextureRect(sf::IntRect(3, 3, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
         //Pozycje startowe gracza
@@ -70,12 +71,23 @@ public:
         postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);     //ustawienie pozycji gracza
     }
     void Ruch_postaci();
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda odpowiadajaca za animacje postaci,
+    // pozycja poczatkowa w konstruktorze klasy
+    /////////////////////////////////////////////////////////////////
     void Animacja_postaci();
     /////////////////////////////////////////////////////////////////
     // \brief metoda zbierajaca punkty i usuwajaca je z planszy
     // \param pozycja logiczna gracza x, pozycja logiczna gracza y
     /////////////////////////////////////////////////////////////////
     void zbieranie_pkt(int pozycja_x, int pozycja_y);
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda poprawiajaca pozycje gracza,
+    // naprawia blad, ktory nie pozwala ruszyc,
+    // gdy postac sie zatrzyma o sciane
+    // \param odleglosc od kratki logicznej x, odleglosc od kratki logicznej y
+    /////////////////////////////////////////////////////////////////
+    void poprawa_pozycji(float wzgledna_x, float wzgledna_y);
 };
 class Blinky  //czerwony przeciwnik (podaza za pacmanem)
 {
@@ -103,7 +115,7 @@ class Clyde //pomaranczowy przeciwnik (goni, ale gdy jest blisko pacmana zaczyna
 class punkty_boost {
 public:
     Grafika punkt = Grafika("grafiki/sprite_sheet.png");
-    sf::Vector2i pozycja_wzgledna;
+    sf::Vector2f pozycja_wzgledna;
     sf::Vector2i pozycja_logiczna;
     punkty_boost() {
         punkt.sprajt.setTextureRect(sf::IntRect(9, 360, 16, 16));
@@ -123,7 +135,7 @@ public:
 class punkty {
 public:
     Grafika punkt = Grafika("grafiki/sprite_sheet.png");
-    sf::Vector2i pozycja_wzgledna;
+    sf::Vector2f pozycja_wzgledna;
     sf::Vector2i pozycja_logiczna;
     punkty() {
         punkt.sprajt.setTextureRect(sf::IntRect(47, 366, 3, 3));
@@ -139,7 +151,7 @@ public:
 //Tablica logiczna
 // '0' -> domyslne pole, mozliwy ruch dla wszystkich
 // '-' -> pole zablokowane dla ruchu
-// '#' -> punkty, ktore trzeba zbierac, po zebraniu staja sie '0'
+// '#' -> punkty, ktore trzeba zbierac
 // 'X' -> boostery, pozwalajace zjadac duchy
 // '2' -> teleport do 3 (dostepne tylko dla gracza)
 // '3' -> teleport do 2 (dostepne tylko dla gracza)
@@ -189,4 +201,4 @@ extern Grafika tlo;
 extern bool czy_wlaczona;                       //Zmienna logiczna -> potrzeba do petli glownej programu
 extern int typ_menu;                            //zmienna odpowiadajaca za typ okna: 1 - MENU; 2- GRA; 3 - OPCJE
 extern punkty_boost boost[4];
-extern punkty punkt[241];
+extern punkty punkt[242];
