@@ -7,6 +7,8 @@ Grafika tlo("grafiki/plansza_3.png");
 PacMan gracz1;
 Blinky czerwony;
 Pinky rozowy;
+Inky niebieski;
+Clyde pomaranczowy;
 punkty_boost boost[4];                                  //tablica boosterow (pozwalajace zjadac przeciwnikow)
 punkty punkt[242];                                      //tablica punktow do zbierania
 
@@ -24,6 +26,8 @@ void Game::Render()                                     // \brief Metoda renderu
         case 2:
             czerwony.Ruch();
             rozowy.Ruch();
+            niebieski.Ruch();
+            pomaranczowy.Ruch();
             gracz1.Ruch_postaci();
             gracz1.Animacja_postaci();
             Game_Render();                              //render okna gry
@@ -60,5 +64,7 @@ void Game::Game_Render()                                                    //Me
     }
     this->okno_aplikacji.draw(czerwony.czerwony.sprajt);
     this->okno_aplikacji.draw(rozowy.rozowy.sprajt);
+    this->okno_aplikacji.draw(niebieski.niebieski.sprajt);
+    this->okno_aplikacji.draw(pomaranczowy.pomaranczowy.sprajt);
     this->okno_aplikacji.draw(gracz1.postac.sprajt);                        //rysowanie gracza
 }

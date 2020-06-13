@@ -1,12 +1,11 @@
 #include "Game.h"
 
 //todo
-//przeciwnicy
 //mechanika boosterow
 //wyswietlanie ilosci zebranych punktow
-
-//bugi
-//blad z animacja w lewo              ??????
+//animacja przeciwnikow
+//start po nacisnieciu ruchu przez pacmana
+//smierc gracza
 
 int typ_menu = 1;                               //Zmienna przelacznika typu menu -> 1: MENU; 2: GRA; 3: OPCJE;
 bool czy_wlaczona = true;                       //Zmienna logiczna -> potrzeba do petli glownej programu

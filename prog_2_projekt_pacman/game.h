@@ -60,8 +60,9 @@ class PacMan
 public:
     sf::Vector2f pozycja_rysowania;                                              //koordynaty pozycji gracza
     Grafika postac = Grafika("grafiki/sprite_sheet.png");
-    Kierunki kierunek_aktualny;                                                  //kierunek wykonywany przez program { STOP = 0, LEWO, PRAWO, GORA, DOL }
-    Kierunki kierunek_nastepny;                                                  //nastepny kierunek zamierzany przez gracza { STOP = 0, LEWO, PRAWO, GORA, DOL }
+    Kierunki kierunek_aktualny=STOP;                                                  //kierunek wykonywany przez program { STOP = 0, LEWO, PRAWO, GORA, DOL }
+    Kierunki kierunek_nastepny=STOP;                                                  //nastepny kierunek zamierzany przez gracza { STOP = 0, LEWO, PRAWO, GORA, DOL }
+    Kierunki kierunek_ostatni=STOP;
     int Ilosc_punktow = 0;
     PacMan() {
         postac.sprajt.setTextureRect(sf::IntRect(3, 3, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
@@ -99,7 +100,7 @@ public:
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
     Blinky() {
-        czerwony.sprajt.setTextureRect(sf::IntRect(3, 146, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
+        czerwony.sprajt.setTextureRect(sf::IntRect(4, 146, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
         pozycja_rysowania.x = 387;
         pozycja_rysowania.y = (float)209.6;
         czerwony.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);     //ustawienie pozycji gracza
@@ -114,28 +115,61 @@ class Pinky  //rozowy przeciwnik (zachodzi droge)
 public:
     sf::Vector2f pozycja_rysowania;
     Grafika rozowy = Grafika("grafiki/sprite_sheet.png");
-    Kierunki kierunek_aktualny = GORA;
-    Kierunki kierunek_nastepny = GORA;
+    Kierunki kierunek_aktualny = PRAWO;
+    Kierunki kierunek_nastepny;
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
     Pinky() {
-        rozowy.sprajt.setTextureRect(sf::IntRect(3, 178, 26, 26));
+        rozowy.sprajt.setTextureRect(sf::IntRect(4, 178, 26, 26));
         pozycja_rysowania.x = 387;
         pozycja_rysowania.y = (float)268;
         rozowy.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
     }
     void Ruch();
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
+    void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
 };
 
 class Inky  //blekitny przeciwnik (zmieniajace sie decyzje)
 {
-
+public:
+    sf::Vector2f pozycja_rysowania;
+    Grafika niebieski = Grafika("grafiki/sprite_sheet.png");
+    Kierunki kierunek_aktualny;
+    Kierunki kierunek_nastepny;
+    int pozycja_ostatniej_zmiany_x = 0;
+    int pozycja_ostatniej_zmiany_y = 0;
+    bool start = false;
+    Inky() {
+        niebieski.sprajt.setTextureRect(sf::IntRect(4, 210, 26, 26));
+        pozycja_rysowania.x = 348;
+        pozycja_rysowania.y = (float)268;
+        niebieski.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+    }
+    void Ruch();
+    void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
+    void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
 };
 
 class Clyde //pomaranczowy przeciwnik (goni, ale gdy jest blisko pacmana zaczyna uciekac)
 {
-
+public:
+    sf::Vector2f pozycja_rysowania;
+    Grafika pomaranczowy = Grafika("grafiki/sprite_sheet.png");
+    Kierunki kierunek_aktualny;
+    Kierunki kierunek_nastepny;
+    int pozycja_ostatniej_zmiany_x = 0;
+    int pozycja_ostatniej_zmiany_y = 0;
+    bool start = false;
+    Clyde() {
+        pomaranczowy.sprajt.setTextureRect(sf::IntRect(3, 242, 26, 26));
+        pozycja_rysowania.x = 427;
+        pozycja_rysowania.y = (float)268;
+        pomaranczowy.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
+    }
+    void Ruch();
+    void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
+    void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
 };
 /////////////////////////////////////////////////////////////////
 // \brief Klasa boosterow wyswietlanych na mapie,
@@ -234,8 +268,8 @@ const char poziom_1_skrzyzowania[][28] =
 '-','-','-','-','-','-','0','-','-','-','-','-','0','-','-','0','-','-','-','-','-','0','-','-','-','-','-','-',
 '-','-','-','-','-','-','0','-','-','0','0','0','?','0','0','?','0','0','0','-','-','0','-','-','-','-','-','-',
 '-','-','-','-','-','-','0','-','-','0','-','-','-','9','9','-','-','-','0','-','-','0','-','-','-','-','-','-',
-'-','-','-','-','-','-','0','-','-','0','-','9','9','9','9','9','9','-','0','-','-','0','-','-','-','-','-','-',
-'2','0','0','0','0','0','?','0','0','?','-','9','9','9','9','9','9','-','?','0','0','?','0','0','0','0','0','3',
+'-','-','-','-','-','-','0','-','-','0','-','9','9','9','0','9','9','-','0','-','-','0','-','-','-','-','-','-',
+'2','0','0','0','0','0','?','0','0','?','-','9','0','0','0','0','9','-','?','0','0','?','0','0','0','0','0','3',
 '-','-','-','-','-','-','0','-','-','0','-','9','9','9','9','9','9','-','0','-','-','0','-','-','-','-','-','-',
 '-','-','-','-','-','-','0','-','-','0','-','-','-','-','-','-','-','-','0','-','-','0','-','-','-','-','-','-',
 '-','-','-','-','-','-','0','-','-','?','0','0','0','0','0','0','0','0','?','-','-','0','-','-','-','-','-','-',
@@ -257,6 +291,8 @@ const char poziom_1_skrzyzowania[][28] =
 extern PacMan gracz1;
 extern Blinky czerwony;
 extern Pinky rozowy;
+extern Inky niebieski;
+extern Clyde pomaranczowy;
 extern rozmiar_okna rozmiar_menu;
 extern rozmiar_okna rozmiar_gry;
 extern Game gra;
