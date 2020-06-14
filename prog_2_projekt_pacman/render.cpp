@@ -25,9 +25,13 @@ void Game::Render()                                     // \brief Metoda renderu
             break;
         case 2:
             czerwony.Ruch();
+            czerwony.Animacja();
             rozowy.Ruch();
+            rozowy.Animacja();
             niebieski.Ruch();
+            niebieski.Animacja();
             pomaranczowy.Ruch();
+            pomaranczowy.Animacja();
             gracz1.Ruch_postaci();
             gracz1.Animacja_postaci();
             Game_Render();                              //render okna gry

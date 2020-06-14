@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <random>
 
 enum Kierunki { STOP = 0, LEWO, PRAWO, GORA, DOL };
 
@@ -64,6 +65,7 @@ public:
     Kierunki kierunek_nastepny=STOP;                                                  //nastepny kierunek zamierzany przez gracza { STOP = 0, LEWO, PRAWO, GORA, DOL }
     Kierunki kierunek_ostatni=STOP;
     int Ilosc_punktow = 0;
+    int boost_aktywny = 0;                                                       //zmienna mowiaca czy pacman moze atakowac przeciwnikow (jesli 1)
     PacMan() {
         postac.sprajt.setTextureRect(sf::IntRect(3, 3, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
         //Pozycje startowe gracza
@@ -99,15 +101,19 @@ public:
     Kierunki kierunek_nastepny;
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
+    bool czy_wybrac_nowy_kierunek = true;
+    int ucieczka = 0;                                                                //zmienna mowiaca jaki tryb poruszania sie ma duszek 0-zwykly, 1-ucieczka przed graczem, 2-powrot do bazy
     Blinky() {
         czerwony.sprajt.setTextureRect(sf::IntRect(4, 146, 26, 26));                 //tekstura postaci wycieta z arkusza tekstur
         pozycja_rysowania.x = 387;
         pozycja_rysowania.y = (float)209.6;
-        czerwony.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);     //ustawienie pozycji gracza
+        czerwony.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);       //ustawienie pozycji gracza
     }
     void Ruch();
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
+    void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void Animacja();
 };
 
 class Pinky  //rozowy przeciwnik (zachodzi droge)
@@ -119,6 +125,8 @@ public:
     Kierunki kierunek_nastepny;
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
+    bool czy_wybrac_nowy_kierunek = true;
+    int ucieczka = 0; 
     Pinky() {
         rozowy.sprajt.setTextureRect(sf::IntRect(4, 178, 26, 26));
         pozycja_rysowania.x = 387;
@@ -128,6 +136,8 @@ public:
     void Ruch();
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
+    void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void Animacja();
 };
 
 class Inky  //blekitny przeciwnik (zmieniajace sie decyzje)
@@ -139,6 +149,8 @@ public:
     Kierunki kierunek_nastepny;
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
+    bool czy_wybrac_nowy_kierunek = true;
+    int ucieczka = 0; 
     bool start = false;
     Inky() {
         niebieski.sprajt.setTextureRect(sf::IntRect(4, 210, 26, 26));
@@ -149,6 +161,8 @@ public:
     void Ruch();
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
+    void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void Animacja();
 };
 
 class Clyde //pomaranczowy przeciwnik (goni, ale gdy jest blisko pacmana zaczyna uciekac)
@@ -161,6 +175,8 @@ public:
     Kierunki kierunek_nastepny;
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
+    bool czy_wybrac_nowy_kierunek = true;
+    int ucieczka = 0; 
     bool start = false;
     Clyde() {
         pomaranczowy.sprajt.setTextureRect(sf::IntRect(3, 242, 26, 26));
@@ -173,6 +189,8 @@ public:
     void Ruch();
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
+    void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void Animacja();
 };
 /////////////////////////////////////////////////////////////////
 // \brief Klasa boosterow wyswietlanych na mapie,

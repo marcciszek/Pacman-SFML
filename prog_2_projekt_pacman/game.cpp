@@ -2,6 +2,7 @@
 
 sf::Clock zegar_ruchu;
 sf::Clock zegar_animacji;
+sf::Clock zegar_boost;
 sf::IntRect klatka_animacji(3, 3, 26, 26);                //startowy kwadrat postaci wycinany z arkusza tekstur
 
 const float predkosc_gracza = 0.0025f;
@@ -15,8 +16,26 @@ void PacMan::Ruch_postaci() {
     float pozycja_wzgledna_y = ((postac.sprajt.getPosition().y + (postac.sprajt.getTextureRect().height / 2))) / wysokosc_kratki;                           //pozycja wertykalna na mapie logicznej
     float odleglosc_od_kratki_x = pozycja_wzgledna_x - floor(pozycja_wzgledna_x);                                                                           //odleglosc horyzontalna od srodka gracza do krawedzi kratki logicznej
     float odleglosc_od_kratki_y = pozycja_wzgledna_y - floor(pozycja_wzgledna_y);                                                                           //odleglosc wertykalna od srodka gracza do krawedzi kratki logicznej
-    std::cout << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << std::endl;
+    //std::cout << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << std::endl;
     //switch ten odpowiedzialny jest za sprawdzenie, czy ostatni kierunek wybrany przez gracza jest mozliwy do realizacji, jesli tak to ustawia odpowiedni kierunek postaci
+    
+    if (zegar_boost.getElapsedTime().asSeconds() >= 6.0f) {
+        boost_aktywny = 0;
+        if (czerwony.ucieczka == 1) {
+            czerwony.ucieczka = 0;
+        }
+        if (rozowy.ucieczka == 1) {
+            rozowy.ucieczka = 0;
+        }
+        if (niebieski.ucieczka == 1) {
+            niebieski.ucieczka = 0;
+        }
+        if (pomaranczowy.ucieczka == 1) {
+            pomaranczowy.ucieczka = 0;
+        }
+        zegar_boost.restart();
+    }
+
     switch (this->kierunek_nastepny)
     {
     case PRAWO:
@@ -230,7 +249,24 @@ void PacMan::zbieranie_pkt(int pozycja_x, int pozycja_y) {
             }
         }
     }
+    else if (poziom_1[pozycja_y][pozycja_x] == 'X')
+    {
+        for (int i = 0; i < 4; i++) {
+            if (pozycja_x == boost[i].pozycja_logiczna.x && pozycja_y == boost[i].pozycja_logiczna.y) {
+                boost[i].Ustawienie(-100, -100);
+                boost_aktywny = 1;
+                czerwony.ucieczka = 1;
+                rozowy.ucieczka = 1;
+                niebieski.ucieczka = 1;
+                pomaranczowy.ucieczka = 1;
+                zegar_boost.restart();
+                break;
+            }
+        }
+    }
 }
+
+
 
 void punkty::Ustawienie(int x, int y) {
     float szerokosc_boku = ((float)rozmiar_gry.x - tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y)) / (float)2;                //szerokosc obszaru miedzy mapa a krawedzia okna

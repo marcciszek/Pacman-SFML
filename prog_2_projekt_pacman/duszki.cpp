@@ -4,14 +4,24 @@ sf::Clock zegar_ruchu_czerwony;
 sf::Clock zegar_ruchu_rozowy;
 sf::Clock zegar_ruchu_niebieski;
 sf::Clock zegar_ruchu_pomaranczowy;
-float predkosc_duszka_cz = 0.0025f;
-float predkosc_duszka_r = 0.0025f;
-float predkosc_duszka_n = 0.0025f;
-float predkosc_duszka_p = 0.0025f;
+float predkosc_duszka_cz = 0.003f;
+float predkosc_duszka_r = 0.003f;
+float predkosc_duszka_n = 0.003f;
+float predkosc_duszka_p = 0.003f;
+
+sf::Clock zegar_animacji_czerwony;
+sf::Clock zegar_animacji_niebieski;
+sf::Clock zegar_animacji_rozowy;
+sf::Clock zegar_animacji_pomaranczowy;
+sf::IntRect klatka_animacji_czerwony(3, 146, 26, 26);
+sf::IntRect klatka_animacji_rozowy(3, 178, 26, 26);
+sf::IntRect klatka_animacji_niebieski(3, 210, 26, 26);
+sf::IntRect klatka_animacji_pomaranczowy(3, 242, 26, 26);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Blinky - czerwony - sciga gracza
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 void Blinky::Ruch() {
@@ -26,14 +36,44 @@ void Blinky::Ruch() {
     float pozycja_wzgledna_y_gracza = ((gracz1.postac.sprajt.getPosition().y + (gracz1.postac.sprajt.getTextureRect().height / 2))) / wysokosc_kratki;                           //pozycja wertykalna na mapie logicznej
 
     //std::cout << odleglosc_od_kratki_x <<" "<< odleglosc_od_kratki_y <<" "<< pozycja_wzgledna_x <<" "<< pozycja_wzgledna_y << std::endl;
-
     if ((int)pozycja_wzgledna_x != pozycja_ostatniej_zmiany_x or (int)pozycja_wzgledna_y != pozycja_ostatniej_zmiany_y){
             
+        if (ucieczka == 2 and (int)pozycja_wzgledna_x == 14 and (int)pozycja_wzgledna_y == 11)
+        {
+            ucieczka = 0;
+        }
+
         if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '0') {
             Sprawdzenie_mozliwosci_ruchu(pozycja_wzgledna_x, pozycja_wzgledna_y);
         }    
-        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?') {
-            skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?')
+        {
+            if (ucieczka == 0)
+            {
+                predkosc_duszka_cz = 0.003f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+                }
+            }
+            else if (ucieczka == 1)
+            {
+                predkosc_duszka_cz = 0.004f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                skrzyzowanie_losowe(pozycja_wzgledna_x, pozycja_wzgledna_y);
+                }
+            }
+            else if (ucieczka == 2)
+            {
+                predkosc_duszka_cz = 0.002f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+
+                }
+            }
         }
     }
     switch (this->kierunek_nastepny)
@@ -46,6 +86,7 @@ void Blinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;                                                                                                                 //ustawienie kierunku postaci na ostatnio wybrany przez gracza
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -57,6 +98,7 @@ void Blinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -68,6 +110,7 @@ void Blinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -79,6 +122,7 @@ void Blinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -228,7 +272,122 @@ void Blinky::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_grac
             kierunek_nastepny = PRAWO;
         }
     }
+    czy_wybrac_nowy_kierunek = false;
 }
+
+void Blinky::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
+{
+    bool czy_zmienic_kierunek = true;
+    std::random_device ziarno;
+    std::mt19937 losowa(ziarno());
+    std::uniform_int_distribution<int> losowy_kierunek(0, 3);
+
+    while (czy_zmienic_kierunek)
+    {
+        int wylosowany_kierunek = losowy_kierunek(losowa);
+        switch (wylosowany_kierunek)
+        {
+        case 0:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' and kierunek_aktualny != DOL))
+            {
+                kierunek_nastepny = GORA;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 1:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' and kierunek_aktualny != PRAWO))
+            {
+                kierunek_nastepny = LEWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 2:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' and kierunek_aktualny != GORA))
+            {
+                kierunek_nastepny = DOL;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 3:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' and kierunek_aktualny != LEWO))
+        {
+            kierunek_nastepny = PRAWO;
+            czy_zmienic_kierunek = false;
+        }
+            break;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Blinky::Animacja() {
+    if (zegar_animacji_czerwony.getElapsedTime().asSeconds() >= 0.1f) {
+        switch (ucieczka) {
+        case 0:
+            switch (kierunek_aktualny) {
+            case PRAWO:
+                klatka_animacji_czerwony.top = 146;               //koordynaty gornej krawedzi klatki
+                if (klatka_animacji_czerwony.left != 3 && klatka_animacji_czerwony.left != 35) {
+                    klatka_animacji_czerwony.left = 3;
+                }
+                if (klatka_animacji_czerwony.left == 35) {      //sprawdzenie czy animacja doszla do ostatniej klatki
+                    klatka_animacji_czerwony.left = 3;          //powrot na pierwsza klatke animacji danego kierunku
+                }
+                else klatka_animacji_czerwony.left = 35;       //skok do nastepnej klatki animacji
+                break;
+            case LEWO:
+                klatka_animacji_czerwony.top = 146;
+                if (klatka_animacji_czerwony.left != 131 && klatka_animacji_czerwony.left != 163) {
+                    klatka_animacji_czerwony.left = 131;
+                }
+                if (klatka_animacji_czerwony.left == 163) {
+                    klatka_animacji_czerwony.left = 131;
+                }
+                else klatka_animacji_czerwony.left = 163;
+                break;
+            case GORA:
+                klatka_animacji_czerwony.top = 146;
+                if (klatka_animacji_czerwony.left != 195 && klatka_animacji_czerwony.left != 227) {
+                    klatka_animacji_czerwony.left = 195;
+                }
+                if (klatka_animacji_czerwony.left == 227) {
+                    klatka_animacji_czerwony.left = 195;
+                }
+                else klatka_animacji_czerwony.left = 227;
+                break;
+            case DOL:
+                klatka_animacji_czerwony.top = 146;
+                if (klatka_animacji_czerwony.left != 67 && klatka_animacji_czerwony.left != 99) {
+                    klatka_animacji_czerwony.left = 67;
+                }
+                if (klatka_animacji_czerwony.left == 99) {
+                    klatka_animacji_czerwony.left = 67;
+                }
+                else klatka_animacji_czerwony.left = 99;
+                break;
+            }
+            czerwony.sprajt.setTextureRect(klatka_animacji_czerwony);
+            zegar_animacji_czerwony.restart();
+            break;
+        case 1:
+            klatka_animacji_czerwony.top = 306;
+            if (klatka_animacji_czerwony.left != 3 && klatka_animacji_czerwony.left != 35) {
+                klatka_animacji_czerwony.left = 3;
+            }
+            if (klatka_animacji_czerwony.left == 35) {
+                klatka_animacji_czerwony.left = 3;
+            }
+            else klatka_animacji_czerwony.left += 32;
+            czerwony.sprajt.setTextureRect(klatka_animacji_czerwony);
+            zegar_animacji_czerwony.restart();
+            break;
+        case 2:
+            break;
+        }
+    }
+}
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,11 +412,42 @@ void Pinky::Ruch() {
 
     if ((int)pozycja_wzgledna_x != pozycja_ostatniej_zmiany_x or (int)pozycja_wzgledna_y != pozycja_ostatniej_zmiany_y) {
 
+        if (ucieczka == 2 and (int)pozycja_wzgledna_x == 14 and (int)pozycja_wzgledna_y == 11)
+        {
+            ucieczka = 0;
+        }
+
         if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '0') {
             Sprawdzenie_mozliwosci_ruchu(pozycja_wzgledna_x, pozycja_wzgledna_y);
         }
-        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?') {
-            skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?')
+        {
+            if (ucieczka == 0)
+            {
+                predkosc_duszka_r = 0.003f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+                }
+            }
+            else if (ucieczka == 1)
+            {
+                predkosc_duszka_r = 0.004f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                    skrzyzowanie_losowe(pozycja_wzgledna_x, pozycja_wzgledna_y);
+                }
+            }
+            else if (ucieczka == 2)
+            {
+                predkosc_duszka_r = 0.002f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+
+                }
+            }
         }
     }
     switch (this->kierunek_nastepny)
@@ -270,6 +460,7 @@ void Pinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;                                                                                                                 //ustawienie kierunku postaci na ostatnio wybrany przez gracza
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -281,6 +472,7 @@ void Pinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -292,6 +484,7 @@ void Pinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -303,6 +496,7 @@ void Pinky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -455,7 +649,6 @@ void Pinky::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz
     if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
         if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_gracza_przesunieta_x) * abs(pozycja_x - pozycja_gracza_przesunieta_x) + abs((pozycja_y - 1) - pozycja_gracza_przesunieta_y) * abs((pozycja_y - 1) - pozycja_gracza_przesunieta_y))) {
             najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_gracza_przesunieta_x) * abs(pozycja_x - pozycja_gracza_przesunieta_x) + abs((pozycja_y - 1) - pozycja_gracza_przesunieta_y) * abs((pozycja_y - 1) - pozycja_gracza_przesunieta_y));
-            std::cout << "GORA: " << najmniejsza_odleglosc << std::endl;
             kierunek_nastepny = GORA;
         }
     }
@@ -463,27 +656,135 @@ void Pinky::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz
 
         if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_gracza_przesunieta_x) * abs(pozycja_x - 1 - pozycja_gracza_przesunieta_x) + abs(pozycja_y - pozycja_gracza_przesunieta_y) * abs(pozycja_y - pozycja_gracza_przesunieta_y))) {
             najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_gracza_przesunieta_x) * abs(pozycja_x - 1 - pozycja_gracza_przesunieta_x) + abs(pozycja_y - pozycja_gracza_przesunieta_y) * abs(pozycja_y - pozycja_gracza_przesunieta_y));
-            std::cout << "LEWO: " << najmniejsza_odleglosc << std::endl;
             kierunek_nastepny = LEWO;
         }
     }
     if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
         if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_gracza_przesunieta_x) * abs(pozycja_x - pozycja_gracza_przesunieta_x) + abs((pozycja_y + 1) - pozycja_gracza_przesunieta_y) * abs((pozycja_y + 1) - pozycja_gracza_przesunieta_y))) {
             najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_gracza_przesunieta_x) * abs(pozycja_x - pozycja_gracza_przesunieta_x) + abs((pozycja_y + 1) - pozycja_gracza_przesunieta_y) * abs((pozycja_y + 1) - pozycja_gracza_przesunieta_y));
-            std::cout << "DOL: " << najmniejsza_odleglosc << std::endl;
             kierunek_nastepny = DOL;
         }
     }
     if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
         if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_gracza_przesunieta_x) * abs(pozycja_x + 1 - pozycja_gracza_przesunieta_x) + abs(pozycja_y - pozycja_gracza_przesunieta_y) * abs(pozycja_y - pozycja_gracza_przesunieta_y))) {
             najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_gracza_przesunieta_x) * abs(pozycja_x + 1 - pozycja_gracza_przesunieta_x) + abs(pozycja_y - pozycja_gracza_przesunieta_y) * abs(pozycja_y - pozycja_gracza_przesunieta_y));
-            std::cout << "PRAWO: " << najmniejsza_odleglosc << std::endl;
             kierunek_nastepny = PRAWO;
         }
     }
+    czy_wybrac_nowy_kierunek = false;
 }
 
+void Pinky::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
+{
+    bool czy_zmienic_kierunek = true;
+    std::random_device ziarno;
+    std::mt19937 losowa(ziarno());
+    std::uniform_int_distribution<int> losowy_kierunek(0, 3);
 
+    while (czy_zmienic_kierunek)
+    {
+        int wylosowany_kierunek = losowy_kierunek(losowa);
+        switch (wylosowany_kierunek)
+        {
+        case 0:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' and kierunek_aktualny != DOL))
+            {
+                kierunek_nastepny = GORA;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 1:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' and kierunek_aktualny != PRAWO))
+            {
+                kierunek_nastepny = LEWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 2:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' and kierunek_aktualny != GORA))
+            {
+                kierunek_nastepny = DOL;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 3:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' and kierunek_aktualny != LEWO))
+            {
+                kierunek_nastepny = PRAWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Pinky::Animacja() {
+    if (zegar_animacji_rozowy.getElapsedTime().asSeconds() >= 0.1f) {
+        switch (ucieczka) {
+        case 0:
+            switch (kierunek_aktualny) {
+            case PRAWO:
+                klatka_animacji_rozowy.top = 178;               //koordynaty gornej krawedzi klatki
+                if (klatka_animacji_rozowy.left != 3 && klatka_animacji_rozowy.left != 35) {
+                    klatka_animacji_rozowy.left = 3;
+                }
+                if (klatka_animacji_rozowy.left == 35) {      //sprawdzenie czy animacja doszla do ostatniej klatki
+                    klatka_animacji_rozowy.left = 3;          //powrot na pierwsza klatke animacji danego kierunku
+                }
+                else klatka_animacji_rozowy.left = 35;       //skok do nastepnej klatki animacji
+                break;
+            case LEWO:
+                klatka_animacji_rozowy.top = 178;
+                if (klatka_animacji_rozowy.left != 131 && klatka_animacji_rozowy.left != 163) {
+                    klatka_animacji_rozowy.left = 131;
+                }
+                if (klatka_animacji_rozowy.left == 163) {
+                    klatka_animacji_rozowy.left = 131;
+                }
+                else klatka_animacji_rozowy.left = 163;
+                break;
+            case GORA:
+                klatka_animacji_rozowy.top = 178;
+                if (klatka_animacji_rozowy.left != 195 && klatka_animacji_rozowy.left != 227) {
+                    klatka_animacji_rozowy.left = 195;
+                }
+                if (klatka_animacji_rozowy.left == 227) {
+                    klatka_animacji_rozowy.left = 195;
+                }
+                else klatka_animacji_rozowy.left = 227;
+                break;
+            case DOL:
+                klatka_animacji_rozowy.top = 178;
+                if (klatka_animacji_rozowy.left != 67 && klatka_animacji_rozowy.left != 99) {
+                    klatka_animacji_rozowy.left = 67;
+                }
+                if (klatka_animacji_rozowy.left == 99) {
+                    klatka_animacji_rozowy.left = 67;
+                }
+                else klatka_animacji_rozowy.left = 99;
+                break;
+            }
+            rozowy.sprajt.setTextureRect(klatka_animacji_rozowy);
+            zegar_animacji_rozowy.restart();
+            break;
+        case 1:
+            klatka_animacji_czerwony.top = 306;
+            if (klatka_animacji_czerwony.left != 3 && klatka_animacji_czerwony.left != 35) {
+                klatka_animacji_czerwony.left = 3;
+            }
+            if (klatka_animacji_czerwony.left == 35) {
+                klatka_animacji_czerwony.left = 3;
+            }
+            else klatka_animacji_czerwony.left += 32;
+            rozowy.sprajt.setTextureRect(klatka_animacji_czerwony);
+            zegar_animacji_rozowy.restart();
+            break;
+        case 2:
+            break;
+        }
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Inky - niebieski - dwie kratki od pacmana jest punktem symetrii, odbicie wzgledenm tego punktu pozycji ducha czerwonego
@@ -511,11 +812,42 @@ void Inky::Ruch() {
 
     if ((int)pozycja_wzgledna_x != pozycja_ostatniej_zmiany_x or (int)pozycja_wzgledna_y != pozycja_ostatniej_zmiany_y) {
 
+        if (ucieczka == 2 and (int)pozycja_wzgledna_x == 14 and (int)pozycja_wzgledna_y == 11)
+        {
+            ucieczka = 0;
+        }
+
         if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '0') {
             Sprawdzenie_mozliwosci_ruchu(pozycja_wzgledna_x, pozycja_wzgledna_y);
         }
-        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?') {
-            skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?')
+        {
+            if (ucieczka == 0)
+            {
+                predkosc_duszka_n = 0.003f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+                }
+            }
+            else if (ucieczka == 1)
+            {
+                predkosc_duszka_n = 0.004f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                    skrzyzowanie_losowe(pozycja_wzgledna_x, pozycja_wzgledna_y);
+                }
+            }
+            else if (ucieczka == 2)
+            {
+                predkosc_duszka_n = 0.002f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+
+                }
+            }
         }
     }
     switch (this->kierunek_nastepny)
@@ -528,6 +860,7 @@ void Inky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;                                                                                                                 //ustawienie kierunku postaci na ostatnio wybrany przez gracza
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -539,6 +872,7 @@ void Inky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -550,6 +884,7 @@ void Inky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -561,6 +896,7 @@ void Inky::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -680,8 +1016,8 @@ void Inky::Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y) {
 void Inky::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz) {
     float pozycja_gracza_przesunieta_x;
     float pozycja_gracza_przesunieta_y;
-    float pozycja_czerwonego_x = czerwony.pozycja_ostatniej_zmiany_x;
-    float pozycja_czerownego_y = czerwony.pozycja_ostatniej_zmiany_y;
+    float pozycja_czerwonego_x = (float)czerwony.pozycja_ostatniej_zmiany_x;
+    float pozycja_czerownego_y = (float)czerwony.pozycja_ostatniej_zmiany_y;
 
     switch (gracz1.kierunek_ostatni)
     {
@@ -748,6 +1084,119 @@ void Inky::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz,
             kierunek_nastepny = PRAWO;
         }
     }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Inky::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
+{
+    bool czy_zmienic_kierunek = true;
+    std::random_device ziarno;
+    std::mt19937 losowa(ziarno());
+    std::uniform_int_distribution<int> losowy_kierunek(0, 3);
+
+    while (czy_zmienic_kierunek)
+    {
+        int wylosowany_kierunek = losowy_kierunek(losowa);
+        switch (wylosowany_kierunek)
+        {
+        case 0:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' and kierunek_aktualny != DOL))
+            {
+                kierunek_nastepny = GORA;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 1:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' and kierunek_aktualny != PRAWO))
+            {
+                kierunek_nastepny = LEWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 2:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' and kierunek_aktualny != GORA))
+            {
+                kierunek_nastepny = DOL;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 3:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' and kierunek_aktualny != LEWO))
+            {
+                kierunek_nastepny = PRAWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Inky::Animacja() {
+    if (zegar_animacji_niebieski.getElapsedTime().asSeconds() >= 0.1f) {
+        switch (ucieczka) {
+        case 0:
+            switch (kierunek_aktualny) {
+            case PRAWO:
+                klatka_animacji_niebieski.top = 210;               //koordynaty gornej krawedzi klatki
+                if (klatka_animacji_niebieski.left != 3 && klatka_animacji_niebieski.left != 35) {
+                    klatka_animacji_niebieski.left = 3;
+                }
+                if (klatka_animacji_niebieski.left == 35) {      //sprawdzenie czy animacja doszla do ostatniej klatki
+                    klatka_animacji_niebieski.left = 3;          //powrot na pierwsza klatke animacji danego kierunku
+                }
+                else klatka_animacji_niebieski.left = 35;       //skok do nastepnej klatki animacji
+                break;
+            case LEWO:
+                klatka_animacji_niebieski.top = 210;
+                if (klatka_animacji_niebieski.left != 131 && klatka_animacji_niebieski.left != 163) {
+                    klatka_animacji_niebieski.left = 131;
+                }
+                if (klatka_animacji_niebieski.left == 163) {
+                    klatka_animacji_niebieski.left = 131;
+                }
+                else klatka_animacji_niebieski.left = 163;
+                break;
+            case GORA:
+                klatka_animacji_niebieski.top = 210;
+                if (klatka_animacji_niebieski.left != 195 && klatka_animacji_niebieski.left != 227) {
+                    klatka_animacji_niebieski.left = 195;
+                }
+                if (klatka_animacji_niebieski.left == 227) {
+                    klatka_animacji_niebieski.left = 195;
+                }
+                else klatka_animacji_niebieski.left = 227;
+                break;
+            case DOL:
+                klatka_animacji_niebieski.top = 210;
+                if (klatka_animacji_niebieski.left != 67 && klatka_animacji_niebieski.left != 99) {
+                    klatka_animacji_niebieski.left = 67;
+                }
+                if (klatka_animacji_niebieski.left == 99) {
+                    klatka_animacji_niebieski.left = 67;
+                }
+                else klatka_animacji_niebieski.left = 99;
+                break;
+            }
+            niebieski.sprajt.setTextureRect(klatka_animacji_niebieski);
+            zegar_animacji_niebieski.restart();
+            break;
+        case 1:
+            klatka_animacji_niebieski.top = 306;
+            if (klatka_animacji_niebieski.left != 3 && klatka_animacji_niebieski.left != 35) {
+                klatka_animacji_niebieski.left = 3;
+            }
+            if (klatka_animacji_niebieski.left == 35) {
+                klatka_animacji_niebieski.left = 3;
+            }
+            else klatka_animacji_niebieski.left += 32;
+            niebieski.sprajt.setTextureRect(klatka_animacji_niebieski);
+            zegar_animacji_niebieski.restart();
+            break;
+        case 2:
+            break;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -777,11 +1226,42 @@ void Clyde::Ruch() {
 
     if ((int)pozycja_wzgledna_x != pozycja_ostatniej_zmiany_x or (int)pozycja_wzgledna_y != pozycja_ostatniej_zmiany_y) {
 
+        if (ucieczka == 2 and (int)pozycja_wzgledna_x == 14 and (int)pozycja_wzgledna_y == 11)
+        {
+            ucieczka = 0;
+        }
+
         if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '0') {
             Sprawdzenie_mozliwosci_ruchu(pozycja_wzgledna_x, pozycja_wzgledna_y);
         }
-        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?') {
-            skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+        else if (poziom_1_skrzyzowania[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x] == '?')
+        {
+            if (ucieczka == 0)
+            {
+                predkosc_duszka_p = 0.003f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+                }
+            }
+            else if (ucieczka == 1)
+            {
+                predkosc_duszka_p = 0.004f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+                    skrzyzowanie_losowe(pozycja_wzgledna_x, pozycja_wzgledna_y);
+                }
+            }
+            else if (ucieczka == 2)
+            {
+                predkosc_duszka_p = 0.002f;
+                if (czy_wybrac_nowy_kierunek)
+                {
+
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+
+                }
+            }
         }
     }
     switch (this->kierunek_nastepny)
@@ -794,6 +1274,7 @@ void Clyde::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;                                                                                                                 //ustawienie kierunku postaci na ostatnio wybrany przez gracza
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -805,6 +1286,7 @@ void Clyde::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -816,6 +1298,7 @@ void Clyde::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -827,6 +1310,7 @@ void Clyde::Ruch() {
                 kierunek_aktualny = kierunek_nastepny;
                 pozycja_ostatniej_zmiany_x = (int)pozycja_wzgledna_x;
                 pozycja_ostatniej_zmiany_y = (int)pozycja_wzgledna_y;
+                czy_wybrac_nowy_kierunek = true;
             }
         }
         break;
@@ -1011,6 +1495,119 @@ void Clyde::skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz
                 //std::cout << "PRAWO: " << najmniejsza_odleglosc << std::endl;
                 kierunek_nastepny = PRAWO;
             }
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Clyde::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
+{
+    bool czy_zmienic_kierunek = true;
+    std::random_device ziarno;
+    std::mt19937 losowa(ziarno());
+    std::uniform_int_distribution<int> losowy_kierunek(0, 3);
+
+    while (czy_zmienic_kierunek)
+    {
+        int wylosowany_kierunek = losowy_kierunek(losowa);
+        switch (wylosowany_kierunek)
+        {
+        case 0:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' and kierunek_aktualny != DOL))
+            {
+                kierunek_nastepny = GORA;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 1:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' and kierunek_aktualny != PRAWO))
+            {
+                kierunek_nastepny = LEWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 2:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' and kierunek_aktualny != GORA))
+            {
+                kierunek_nastepny = DOL;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        case 3:
+            if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' and kierunek_aktualny != LEWO))
+            {
+                kierunek_nastepny = PRAWO;
+                czy_zmienic_kierunek = false;
+            }
+            break;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Clyde::Animacja() {
+    if (zegar_animacji_pomaranczowy.getElapsedTime().asSeconds() >= 0.1f) {
+        switch (ucieczka) {
+        case 0:
+            switch (kierunek_aktualny) {
+            case PRAWO:
+                klatka_animacji_pomaranczowy.top = 242;               //koordynaty gornej krawedzi klatki
+                if (klatka_animacji_pomaranczowy.left != 3 && klatka_animacji_pomaranczowy.left != 35) {
+                    klatka_animacji_pomaranczowy.left = 3;
+                }
+                if (klatka_animacji_pomaranczowy.left == 35) {      //sprawdzenie czy animacja doszla do ostatniej klatki
+                    klatka_animacji_pomaranczowy.left = 3;          //powrot na pierwsza klatke animacji danego kierunku
+                }
+                else klatka_animacji_pomaranczowy.left = 35;       //skok do nastepnej klatki animacji
+                break;
+            case LEWO:
+                klatka_animacji_pomaranczowy.top = 242;
+                if (klatka_animacji_pomaranczowy.left != 131 && klatka_animacji_pomaranczowy.left != 163) {
+                    klatka_animacji_pomaranczowy.left = 131;
+                }
+                if (klatka_animacji_pomaranczowy.left == 163) {
+                    klatka_animacji_pomaranczowy.left = 131;
+                }
+                else klatka_animacji_pomaranczowy.left = 163;
+                break;
+            case GORA:
+                klatka_animacji_pomaranczowy.top = 242;
+                if (klatka_animacji_pomaranczowy.left != 195 && klatka_animacji_pomaranczowy.left != 227) {
+                    klatka_animacji_pomaranczowy.left = 195;
+                }
+                if (klatka_animacji_pomaranczowy.left == 227) {
+                    klatka_animacji_pomaranczowy.left = 195;
+                }
+                else klatka_animacji_pomaranczowy.left = 227;
+                break;
+            case DOL:
+                klatka_animacji_pomaranczowy.top = 242;
+                if (klatka_animacji_pomaranczowy.left != 67 && klatka_animacji_pomaranczowy.left != 99) {
+                    klatka_animacji_pomaranczowy.left = 67;
+                }
+                if (klatka_animacji_pomaranczowy.left == 99) {
+                    klatka_animacji_pomaranczowy.left = 67;
+                }
+                else klatka_animacji_pomaranczowy.left = 99;
+                break;
+            }
+            pomaranczowy.sprajt.setTextureRect(klatka_animacji_pomaranczowy);
+            zegar_animacji_pomaranczowy.restart();
+            break;
+        case 1:
+            klatka_animacji_pomaranczowy.top = 306;
+            if (klatka_animacji_pomaranczowy.left != 3 && klatka_animacji_pomaranczowy.left != 35) {
+                klatka_animacji_pomaranczowy.left = 3;
+            }
+            if (klatka_animacji_pomaranczowy.left == 35) {
+                klatka_animacji_pomaranczowy.left = 3;
+            }
+            else klatka_animacji_pomaranczowy.left += 32;
+            pomaranczowy.sprajt.setTextureRect(klatka_animacji_pomaranczowy);
+            zegar_animacji_pomaranczowy.restart();
+            break;
+        case 2:
+            break;
         }
     }
 }
