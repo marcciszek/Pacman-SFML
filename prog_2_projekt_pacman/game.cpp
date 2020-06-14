@@ -18,7 +18,9 @@ void PacMan::Ruch_postaci() {
     float odleglosc_od_kratki_y = pozycja_wzgledna_y - floor(pozycja_wzgledna_y);                                                                           //odleglosc wertykalna od srodka gracza do krawedzi kratki logicznej
     //std::cout << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << std::endl;
     //switch ten odpowiedzialny jest za sprawdzenie, czy ostatni kierunek wybrany przez gracza jest mozliwy do realizacji, jesli tak to ustawia odpowiedni kierunek postaci
-    
+
+    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
+
     if (zegar_boost.getElapsedTime().asSeconds() >= 6.0f) {
         boost_aktywny = 0;
         if (czerwony.ucieczka == 1) {
@@ -83,7 +85,6 @@ void PacMan::Ruch_postaci() {
     case PRAWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
-            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_x >= 0.5f)                                                                                                                          //sprawdzenie czy gracz jest w polowie kratki
             {
                 if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '-' || poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '9')     //Sprawdzenie mozliwosciu ruchu
@@ -116,7 +117,6 @@ void PacMan::Ruch_postaci() {
     case LEWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
-            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_x <= 0.5)
             {
                 if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '-' || poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '9')
@@ -149,7 +149,6 @@ void PacMan::Ruch_postaci() {
     case DOL:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
-            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_y >= 0.5)
             {
                 if (poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] == '-' || poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] == '9')
@@ -176,7 +175,6 @@ void PacMan::Ruch_postaci() {
     case GORA:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
-            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_y <= 0.5)
             {
                 if (poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] == '-' || poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] == '9')
@@ -371,4 +369,17 @@ void PacMan::Kontakt_z_przeciwnikiem(float pozycja_x, float pozycja_y) {
             pomaranczowy.ucieczka = 2;
         }
     }
+}
+
+void PacMan::reset()
+{
+    this->kierunek_aktualny = STOP;
+    this->kierunek_nastepny = STOP;
+    this->kierunek_ostatni = STOP;
+    this->Ilosc_punktow = 0;
+    this->boost_aktywny = 0;
+    this->postac.sprajt.setTextureRect(sf::IntRect(3, 3, 26, 26));
+    this->pozycja_rysowania.x = 387;
+    this->pozycja_rysowania.y = (float)441.9;
+    this->postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
 }

@@ -10,11 +10,11 @@ void Game::Event() {
 
         if (zdarzenie.type == sf::Event::MouseButtonPressed && zdarzenie.mouseButton.button == sf::Mouse::Left)        //Lewy przycisk myszy wcisniety
         {
-            if (start.sprajt.getGlobalBounds().contains(okno_aplikacji.mapPixelToCoords(sf::Mouse::getPosition(okno_aplikacji))) && typ_menu==1) //Kursor w obrebie przycisku start i aktualnie wyswietlane jest menu
+            if (start.sprajt.getGlobalBounds().contains(okno_aplikacji.mapPixelToCoords(sf::Mouse::getPosition(okno_aplikacji))) && typ_menu==1) //Sprawdzenie czy jestesmy w menu i czy kursor jest na przycisku start
             {
-                gra.Init(rozmiar_gry.x, rozmiar_gry.y);                                                                                 //Inicjalizacja gry
-                typ_menu = 2;                                                                                       //Zmiana typu menu na 2: GRA;
                 this->okno_aplikacji.close();
+                gra.Init(rozmiar_gry.x, rozmiar_gry.y);                                                                                          //Inicjalizacja gry
+                typ_menu = 2;
                 break;
             }
         }
@@ -33,10 +33,15 @@ void Game::Event() {
 
         if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Space and (stan_gry==1 or stan_gry==2))
         {
-
             typ_menu = 1;
             stan_gry = 0;
             gra_aktywna = false;
+            gracz1.reset();
+            czerwony.reset();
+            rozowy.reset();
+            niebieski.reset();
+            pomaranczowy.reset();
+            ustawienie_punktow_i_boostow();
         }
     }
 }

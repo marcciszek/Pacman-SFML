@@ -16,7 +16,6 @@ struct rozmiar_okna
 class Game                                       //podstawowa klasa odpowiedzialna za gre
 {
 public:
-
     //Funkcja obslugujaca zdarzenia (zdarzenia.cpp)
     void Event();
     
@@ -31,6 +30,8 @@ public:
     void Game_Render();
 
     void warunki_pomocnicze();
+
+    void ustawienie_punktow_i_boostow();
 
     sf::RenderWindow okno_aplikacji;             //Deklaracja glownego okna aplikacji
     sf::Event zdarzenie;                         //Zmienna obslugujaca zdarzenia w aplikacji
@@ -95,7 +96,17 @@ public:
     // \param odleglosc od kratki logicznej x, odleglosc od kratki logicznej y
     /////////////////////////////////////////////////////////////////
     void poprawa_pozycji(float wzgledna_x, float wzgledna_y);
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda oblsugujaca reakcje na 
+    // kontakt z przeciwnikiem
+    // \param pozycja kratki logicznej x, pozycja kratki logicznej y 
+    // (na ktorej znajduje sie gracz)
+    /////////////////////////////////////////////////////////////////
     void Kontakt_z_przeciwnikiem(float wzgledna_x, float wzgledna_y);
+    /////////////////////////////////////////////////////////////////
+    // \brief metoda przywracajaca wartosci poczatkowe
+    /////////////////////////////////////////////////////////////////
+    void reset();
 };
 class Blinky  //czerwony przeciwnik (podaza za pacmanem)
 {
@@ -103,7 +114,7 @@ public:
     sf::Vector2f pozycja_rysowania;
     Grafika czerwony = Grafika("grafiki/sprite_sheet.png");
     Kierunki kierunek_aktualny = LEWO;
-    Kierunki kierunek_nastepny;
+    Kierunki kierunek_nastepny = STOP;
     int pozycja_ostatniej_zmiany_x = 0;
     int pozycja_ostatniej_zmiany_y = 0;
     bool czy_wybrac_nowy_kierunek = true;
@@ -120,6 +131,7 @@ public:
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
     void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
+    void reset();
 };
 
 class Pinky  //rozowy przeciwnik (zachodzi droge)
@@ -145,9 +157,10 @@ public:
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
     void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
+    void reset();
 };
 
-class Inky  //blekitny przeciwnik (zmieniajace sie decyzje)
+class Inky  //blekitny przeciwnik (odleglosc obliczana na podsawie czerwonego wzgledem punktu symetri dwa pola przed graczem)
 {
 public:
     sf::Vector2f pozycja_rysowania;
@@ -171,6 +184,7 @@ public:
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
     void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
+    void reset();
 };
 
 class Clyde //pomaranczowy przeciwnik (goni, ale gdy jest blisko pacmana zaczyna uciekac)
@@ -200,6 +214,7 @@ public:
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
     void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
+    void reset();
 };
 /////////////////////////////////////////////////////////////////
 // \brief Klasa boosterow wyswietlanych na mapie,

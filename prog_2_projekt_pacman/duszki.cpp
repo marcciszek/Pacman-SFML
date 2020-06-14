@@ -411,9 +411,43 @@ void Blinky::Animacja() {
             zegar_animacji_czerwony.restart();
             break;
         case 2:
+            switch (kierunek_aktualny) {
+            case GORA:
+                klatka_animacji_czerwony.top = 274;
+                klatka_animacji_czerwony.left = 195;
+                break;
+            case DOL:
+                klatka_animacji_czerwony.top = 274;
+                klatka_animacji_czerwony.left = 67;
+                break;
+            case LEWO:
+                klatka_animacji_czerwony.top = 274;
+                klatka_animacji_czerwony.left = 131;
+                break;
+            case PRAWO:
+                klatka_animacji_czerwony.top = 274;
+                klatka_animacji_czerwony.left = 3;
+                break;
+            }
+            czerwony.sprajt.setTextureRect(klatka_animacji_czerwony);
+            zegar_animacji_czerwony.restart();
             break;
         }
     }
+}
+
+void Blinky::reset()
+{
+    this->kierunek_aktualny = LEWO;
+    this->kierunek_nastepny = STOP;
+    this->pozycja_ostatniej_zmiany_x = 0;
+    this->pozycja_ostatniej_zmiany_y = 0;
+    this->czy_wybrac_nowy_kierunek = true;
+    this->ucieczka = 0;
+    this->czerwony.sprajt.setTextureRect(sf::IntRect(4, 146, 26, 26));
+    this->pozycja_rysowania.x = 387;
+    this->pozycja_rysowania.y = (float)209.6;
+    this->czerwony.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
 }
 
 
@@ -840,9 +874,43 @@ void Pinky::Animacja() {
             zegar_animacji_rozowy.restart();
             break;
         case 2:
+            switch (kierunek_aktualny) {
+            case GORA:
+                klatka_animacji_rozowy.top = 274;
+                klatka_animacji_rozowy.left = 195;
+                break;
+            case DOL:
+                klatka_animacji_rozowy.top = 274;
+                klatka_animacji_rozowy.left = 67;
+                break;
+            case LEWO:
+                klatka_animacji_rozowy.top = 274;
+                klatka_animacji_rozowy.left = 131;
+                break;
+            case PRAWO:
+                klatka_animacji_rozowy.top = 274;
+                klatka_animacji_rozowy.left = 3;
+                break;
+            }
+            rozowy.sprajt.setTextureRect(klatka_animacji_rozowy);
+            zegar_animacji_rozowy.restart();
             break;
         }
     }
+}
+
+void Pinky::reset()
+{
+    this->kierunek_aktualny = PRAWO;
+    this->kierunek_nastepny = STOP;
+    this->pozycja_ostatniej_zmiany_x = 0;
+    this->pozycja_ostatniej_zmiany_y = 0;
+    this->czy_wybrac_nowy_kierunek = true;
+    this->ucieczka = 0;
+    this->rozowy.sprajt.setTextureRect(sf::IntRect(4, 178, 26, 26));
+    this->pozycja_rysowania.x = 387;
+    this->pozycja_rysowania.y = (float)268;
+    this->rozowy.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1283,9 +1351,44 @@ void Inky::Animacja() {
             zegar_animacji_niebieski.restart();
             break;
         case 2:
+            switch (kierunek_aktualny) {
+            case GORA:
+                klatka_animacji_niebieski.top = 274;
+                klatka_animacji_niebieski.left = 195;
+                break;
+            case DOL:
+                klatka_animacji_niebieski.top = 274;
+                klatka_animacji_niebieski.left = 67;
+                break;
+            case LEWO:
+                klatka_animacji_niebieski.top = 274;
+                klatka_animacji_niebieski.left = 131;
+                break;
+            case PRAWO:
+                klatka_animacji_niebieski.top = 274;
+                klatka_animacji_niebieski.left = 3;
+                break;
+            }
+            niebieski.sprajt.setTextureRect(klatka_animacji_niebieski);
+            zegar_animacji_niebieski.restart();
             break;
         }
     }
+}
+
+void Inky::reset()
+{
+    this->kierunek_aktualny = STOP;
+    this->kierunek_nastepny = STOP;
+    this->pozycja_ostatniej_zmiany_x = 0;
+    this->pozycja_ostatniej_zmiany_y = 0;
+    this->czy_wybrac_nowy_kierunek = true;
+    this->ucieczka = 0;
+    this->start = false;
+    this->niebieski.sprajt.setTextureRect(sf::IntRect(4, 210, 26, 26));
+    this->pozycja_rysowania.x = 348;
+    this->pozycja_rysowania.y = (float)268;
+    this->niebieski.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1727,7 +1830,44 @@ void Clyde::Animacja() {
             zegar_animacji_pomaranczowy.restart();
             break;
         case 2:
+            switch (kierunek_aktualny) {
+            case GORA:
+                klatka_animacji_pomaranczowy.top = 274;
+                klatka_animacji_pomaranczowy.left = 195;
+                break;
+            case DOL:
+                klatka_animacji_pomaranczowy.top = 274;
+                klatka_animacji_pomaranczowy.left = 67;
+                break;
+            case LEWO:
+                klatka_animacji_pomaranczowy.top = 274;
+                klatka_animacji_pomaranczowy.left = 131;
+                break;
+            case PRAWO:
+                klatka_animacji_pomaranczowy.top = 274;
+                klatka_animacji_pomaranczowy.left = 3;
+                break;
+            }
+            pomaranczowy.sprajt.setTextureRect(klatka_animacji_pomaranczowy);
+            zegar_animacji_pomaranczowy.restart();
             break;
         }
     }
+}
+
+void Clyde::reset()
+{
+    this->kierunek_aktualny = STOP;
+    this->kierunek_nastepny = STOP;
+    this->pozycja_ostatniej_zmiany_x = 0;
+    this->pozycja_ostatniej_zmiany_y = 0;
+    this->czy_wybrac_nowy_kierunek = true;
+    this->ucieczka = 0;
+    this->start = false;
+    this->pomaranczowy.sprajt.setTextureRect(sf::IntRect(3, 242, 26, 26));
+    this->pozycja_rysowania.x = 427;
+    this->pozycja_rysowania.y = (float)268;
+    this->pozycja_rog.x = 3.5;
+    this->pozycja_rog.y = 31.5;
+    this->pomaranczowy.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
 }

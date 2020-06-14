@@ -21,20 +21,7 @@ void Game::Render()                                     // \brief Metoda renderu
     komunikat.setFont(font);
     zdobyte_punkty.setFillColor(sf::Color::Red);
 
-    int nr_boost = 0;                                                     //licznik boosterow
-    int nr_pkt = 0;                                                       //licznik punktow
-    for (int x = 1; x < 30; x++) {
-        for (int y = 1; y < 27; y++) {
-            if (poziom_1[x][y] == 'X') {
-                boost[nr_boost].Ustawienie(y, x);                         //ustawienie boosterow
-                nr_boost++;
-            }
-            if (poziom_1[x][y] == '#') {
-                punkt[nr_pkt].Ustawienie(y, x);                           //ustawienie punktow
-                nr_pkt++;
-            }
-        }
-    }
+    ustawienie_punktow_i_boostow();
 
     while (this->okno_aplikacji.isOpen()) 
     {
@@ -133,5 +120,23 @@ void Game::warunki_pomocnicze()
     if (gracz1.Ilosc_punktow == 242)                                        //sprawdzenie czy gracz zebral wszystkie punkty
     {
         stan_gry = 1;
+    }
+}
+
+void Game::ustawienie_punktow_i_boostow()
+{
+    int nr_boost = 0;
+    int nr_pkt = 0;
+    for (int x = 1; x < 30; x++) {
+        for (int y = 1; y < 27; y++) {
+            if (poziom_1[x][y] == 'X') {
+                boost[nr_boost].Ustawienie(y, x);
+                nr_boost++;
+            }
+            if (poziom_1[x][y] == '#') {
+                punkt[nr_pkt].Ustawienie(y, x);
+                nr_pkt++;
+            }
+        }
     }
 }
