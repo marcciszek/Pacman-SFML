@@ -83,6 +83,7 @@ void PacMan::Ruch_postaci() {
     case PRAWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
+            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_x >= 0.5f)                                                                                                                          //sprawdzenie czy gracz jest w polowie kratki
             {
                 if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '-' || poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] == '9')     //Sprawdzenie mozliwosciu ruchu
@@ -102,7 +103,6 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.x += (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x , pozycja_rysowania.y);                                                                               //zmiana pozycji gracza
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);                                                                                    //funkcja zbirajaca punkty
-                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -116,6 +116,7 @@ void PacMan::Ruch_postaci() {
     case LEWO:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
+            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_x <= 0.5)
             {
                 if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '-' || poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x - 1] == '9')
@@ -135,7 +136,6 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.x -= (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
-                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -149,6 +149,7 @@ void PacMan::Ruch_postaci() {
     case DOL:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
+            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_y >= 0.5)
             {
                 if (poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] == '-' || poziom_1[(int)pozycja_wzgledna_y + 1][(int)pozycja_wzgledna_x] == '9')
@@ -162,7 +163,6 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.y += (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
-                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -176,6 +176,7 @@ void PacMan::Ruch_postaci() {
     case GORA:
         if (zegar_ruchu.getElapsedTime().asSeconds() >= predkosc_gracza)
         {
+            Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
             if (odleglosc_od_kratki_y <= 0.5)
             {
                 if (poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] == '-' || poziom_1[(int)pozycja_wzgledna_y - 1][(int)pozycja_wzgledna_x] == '9')
@@ -189,7 +190,6 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.y -= (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
-                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else

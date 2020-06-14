@@ -14,7 +14,7 @@ void Game::Event() {
             {
                 gra.Init(rozmiar_gry.x, rozmiar_gry.y);                                                                                 //Inicjalizacja gry
                 typ_menu = 2;                                                                                       //Zmiana typu menu na 2: GRA;
-                this->okno_aplikacji.close();                                                                       //Zamkniecie okna konsoli
+                this->okno_aplikacji.close();
                 break;
             }
         }
@@ -29,6 +29,14 @@ void Game::Event() {
         }
         if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Down) {
             gracz1.kierunek_nastepny = DOL;
+        }
+
+        if (zdarzenie.type == sf::Event::KeyPressed && zdarzenie.key.code == sf::Keyboard::Space and (stan_gry==1 or stan_gry==2))
+        {
+
+            typ_menu = 1;
+            stan_gry = 0;
+            gra_aktywna = false;
         }
     }
 }

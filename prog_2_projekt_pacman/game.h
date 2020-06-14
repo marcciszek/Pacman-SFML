@@ -16,6 +16,7 @@ struct rozmiar_okna
 class Game                                       //podstawowa klasa odpowiedzialna za gre
 {
 public:
+
     //Funkcja obslugujaca zdarzenia (zdarzenia.cpp)
     void Event();
     
@@ -28,6 +29,8 @@ public:
     
     //Funkcja do renderowania okna (gra)
     void Game_Render();
+
+    void warunki_pomocnicze();
 
     sf::RenderWindow okno_aplikacji;             //Deklaracja glownego okna aplikacji
     sf::Event zdarzenie;                         //Zmienna obslugujaca zdarzenia w aplikacji
@@ -322,6 +325,7 @@ const char poziom_1_skrzyzowania[][28] =
 '-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-'
 };
 
+extern sf::Font font;
 extern PacMan gracz1;
 extern Blinky czerwony;
 extern Pinky rozowy;
