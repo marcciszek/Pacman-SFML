@@ -1,14 +1,16 @@
 #include "Game.h"
 
 //todo
-//mechanika boosterow (powrot po ataku gracza)
-//wyswietlanie ilosci zebranych punktow
-//start po nacisnieciu ruchu przez pacmana
-//smierc gracza
+//smierc gracza + komunikaty o wygranej/przegranej
 //??wypisanie czasu boosta
+
+//bug
+//nie zawsze przegrywa sie przy spotkaniu z przeciwnikiem
 
 int typ_menu = 1;                               //Zmienna przelacznika typu menu -> 1: MENU; 2: GRA; 3: OPCJE;
 bool czy_wlaczona = true;                       //Zmienna logiczna -> potrzeba do petli glownej programu
+bool gra_aktywna = false;
+int stan_gry = 0;                               //domyslnie 0, 1 to wygrana, 2 to przegrana
 rozmiar_okna rozmiar_menu = { 800,600 };
 rozmiar_okna rozmiar_gry = { 800, 600 };
 

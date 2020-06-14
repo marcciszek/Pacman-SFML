@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <random>
+#include <string>
 
 enum Kierunki { STOP = 0, LEWO, PRAWO, GORA, DOL };
 
@@ -91,6 +92,7 @@ public:
     // \param odleglosc od kratki logicznej x, odleglosc od kratki logicznej y
     /////////////////////////////////////////////////////////////////
     void poprawa_pozycji(float wzgledna_x, float wzgledna_y);
+    void Kontakt_z_przeciwnikiem(float wzgledna_x, float wzgledna_y);
 };
 class Blinky  //czerwony przeciwnik (podaza za pacmanem)
 {
@@ -113,6 +115,7 @@ public:
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
 };
 
@@ -137,6 +140,7 @@ public:
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
 };
 
@@ -162,6 +166,7 @@ public:
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
 };
 
@@ -190,6 +195,7 @@ public:
     void Sprawdzenie_mozliwosci_ruchu(float pozycja_x, float pozycja_y);
     void skrzyzowanie(float pozycja_x, float pozycja_y, float pozycja_x_gracz, float pozycja_y_gracz);
     void skrzyzowanie_losowe(float pozycja_x, float pozycja_y);
+    void skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y);
     void Animacja();
 };
 /////////////////////////////////////////////////////////////////
@@ -237,8 +243,8 @@ public:
 // '-' -> pole zablokowane dla ruchu
 // '#' -> punkty, ktore trzeba zbierac
 // 'X' -> boostery, pozwalajace zjadac duchy
-// '2' -> teleport do 3 (dostepne tylko dla gracza)
-// '3' -> teleport do 2 (dostepne tylko dla gracza)
+// '2' -> teleport do 3
+// '3' -> teleport do 2
 // '9' -> pole ruchu dostepne tylko dla przeciwnikow
 const char poziom_1[][28] =
 {
@@ -274,6 +280,13 @@ const char poziom_1[][28] =
 '-','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','-',
 '-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-'
 };
+//Tablica logiczna dla algorytmow sterujacych ruchami przeciwnikow
+// '0' -> domyslne pole, mozliwy ruch dla wszystkich
+// '-' -> pole zablokowane dla ruchu
+// '2' -> teleport do 3
+// '3' -> teleport do 2
+// '9' -> pole 'neutalne', nie korzystaja z niego rzadne algorytmy
+// '?' -> skrzyzowanie na ktorym przeciwnik podejmuje decyzje o ruchu
 const char poziom_1_skrzyzowania[][28] =
 {
 '-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-',
@@ -321,6 +334,8 @@ extern Grafika start;
 extern Grafika logo;
 extern Grafika tlo;
 extern bool czy_wlaczona;                       //Zmienna logiczna -> potrzeba do petli glownej programu
+extern bool gra_aktywna;
+extern int stan_gry;
 extern int typ_menu;                            //zmienna odpowiadajaca za typ okna: 1 - MENU; 2- GRA; 3 - OPCJE
 extern punkty_boost boost[4];
 extern punkty punkt[242];

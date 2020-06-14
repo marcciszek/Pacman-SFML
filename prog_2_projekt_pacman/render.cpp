@@ -4,6 +4,8 @@
 Grafika logo("grafiki/logo.png");
 Grafika start("grafiki/start.png");
 Grafika tlo("grafiki/plansza_3.png");
+sf::Font font;
+sf::Text zdobyte_punkty;
 PacMan gracz1;
 Blinky czerwony;
 Pinky rozowy;
@@ -14,9 +16,16 @@ punkty punkt[242];                                      //tablica punktow do zbi
 
 void Game::Render()                                     // \brief Metoda renderujaca aplikacje
 {
+    if (!font.loadFromFile("grafiki/FrederickatheGreat-Regular.ttf"))
+    {
+        std::cerr << "font problem" << std::endl;
+    }
+    zdobyte_punkty.setFont(font);
+    zdobyte_punkty.setFillColor(sf::Color::Red);
+
+
     while (this->okno_aplikacji.isOpen()) 
     {
-        
         Event();                                        //Metoda sprawdzajaca zdarzenia w aplikacji (zdarzenia.cpp)
         switch (typ_menu)
         {
@@ -24,16 +33,30 @@ void Game::Render()                                     // \brief Metoda renderu
             Menu_Render();                              //render okna menu
             break;
         case 2:
-            czerwony.Ruch();
-            czerwony.Animacja();
-            rozowy.Ruch();
-            rozowy.Animacja();
-            niebieski.Ruch();
-            niebieski.Animacja();
-            pomaranczowy.Ruch();
-            pomaranczowy.Animacja();
-            gracz1.Ruch_postaci();
-            gracz1.Animacja_postaci();
+            if (gra_aktywna==true and stan_gry == 0)    //render gdy gra trwa
+            {
+                if (stan_gry == 0)
+                {
+                    czerwony.Ruch();
+                    czerwony.Animacja();
+                    rozowy.Ruch();
+                    rozowy.Animacja();
+                    niebieski.Ruch();
+                    niebieski.Animacja();
+                    pomaranczowy.Ruch();
+                    pomaranczowy.Animacja();
+                    gracz1.Ruch_postaci();
+                    gracz1.Animacja_postaci();
+                }
+                 else if (stan_gry == 1)               //przerwanie gdy wygrana
+                {
+                    std::cout << "wygrana" << std::endl;
+                }
+                 else if (stan_gry == 2)               //przerwanie gdy przegrana
+                {
+                    std::cout << "przegrana" << std::endl;
+                }
+            }
             Game_Render();                              //render okna gry
             break;
         }
@@ -71,4 +94,17 @@ void Game::Game_Render()                                                    //Me
     this->okno_aplikacji.draw(niebieski.niebieski.sprajt);
     this->okno_aplikacji.draw(pomaranczowy.pomaranczowy.sprajt);
     this->okno_aplikacji.draw(gracz1.postac.sprajt);                        //rysowanie gracza
+
+    zdobyte_punkty.setString("Punkty\n"+std::to_string(gracz1.Ilosc_punktow)+"/242");
+
+    this->okno_aplikacji.draw(zdobyte_punkty);
+
+    if (gracz1.kierunek_nastepny != STOP)
+    {
+        gra_aktywna = true;
+    }
+    if (gracz1.Ilosc_punktow == 242)
+    {
+        stan_gry = 1;
+    }
 }

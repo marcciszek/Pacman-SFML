@@ -33,7 +33,6 @@ void PacMan::Ruch_postaci() {
         if (pomaranczowy.ucieczka == 1) {
             pomaranczowy.ucieczka = 0;
         }
-        zegar_boost.restart();
     }
 
     switch (this->kierunek_nastepny)
@@ -103,6 +102,7 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.x += (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x , pozycja_rysowania.y);                                                                               //zmiana pozycji gracza
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);                                                                                    //funkcja zbirajaca punkty
+                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -135,6 +135,7 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.x -= (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
+                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -161,6 +162,7 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.y += (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
+                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -187,6 +189,7 @@ void PacMan::Ruch_postaci() {
                     pozycja_rysowania.y -= (float)0.5;
                     postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
                     zbieranie_pkt((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
+                    Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
                 }
             }
             else
@@ -316,5 +319,56 @@ void PacMan::poprawa_pozycji(float wzgledna_x, float wzgledna_y)
         pozycja_rysowania.y -= 0.2f;
         postac.sprajt.setPosition(pozycja_rysowania.x, pozycja_rysowania.y);
         std::cout << "4" << std::endl;
+    }
+}
+
+void PacMan::Kontakt_z_przeciwnikiem(float pozycja_x, float pozycja_y) {
+
+    if (pozycja_x == czerwony.pozycja_ostatniej_zmiany_x && pozycja_y == czerwony.pozycja_ostatniej_zmiany_y)
+    {
+        if (czerwony.ucieczka == 0)
+        {
+            stan_gry = 2;
+        }
+        else if (czerwony.ucieczka == 1)
+        {
+            czerwony.ucieczka = 2;
+        }
+    }
+
+    if (pozycja_x == rozowy.pozycja_ostatniej_zmiany_x && pozycja_y == rozowy.pozycja_ostatniej_zmiany_y)
+    {
+        if (rozowy.ucieczka == 0)
+        {
+            stan_gry = 2;
+        }
+        else if (rozowy.ucieczka == 1)
+        {
+            rozowy.ucieczka = 2;
+        }
+    }
+
+    if (pozycja_x == niebieski.pozycja_ostatniej_zmiany_x && pozycja_y == niebieski.pozycja_ostatniej_zmiany_y)
+    {
+        if (niebieski.ucieczka == 0)
+        {
+            stan_gry = 2;
+        }
+        else if (niebieski.ucieczka == 1)
+        {
+            niebieski.ucieczka = 2;
+        }
+    }
+
+    if (pozycja_x == pomaranczowy.pozycja_ostatniej_zmiany_x && pozycja_y == pomaranczowy.pozycja_ostatniej_zmiany_y)
+    {
+        if (pomaranczowy.ucieczka == 0)
+        {
+            stan_gry = 2;
+        }
+        else if (pomaranczowy.ucieczka == 1)
+        {
+            pomaranczowy.ucieczka = 2;
+        }
     }
 }

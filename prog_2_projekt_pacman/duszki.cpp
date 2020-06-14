@@ -23,7 +23,6 @@ sf::IntRect klatka_animacji_pomaranczowy(3, 242, 26, 26);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
 void Blinky::Ruch() {
     float szerokosc_boku = ((float)rozmiar_gry.x - tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y)) / (float)2;                //szerokosc obszaru miedzy mapa a krawedzia okna
     float szerokosc_kratki = tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)28;                                      //szerokosc kratki na mapie logicznej
@@ -53,7 +52,7 @@ void Blinky::Ruch() {
                 predkosc_duszka_cz = 0.003f;
                 if (czy_wybrac_nowy_kierunek)
                 {
-                skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
+                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, pozycja_wzgledna_x_gracza, pozycja_wzgledna_y_gracza);
                 }
             }
             else if (ucieczka == 1)
@@ -61,17 +60,15 @@ void Blinky::Ruch() {
                 predkosc_duszka_cz = 0.004f;
                 if (czy_wybrac_nowy_kierunek)
                 {
-                skrzyzowanie_losowe(pozycja_wzgledna_x, pozycja_wzgledna_y);
+                    skrzyzowanie_losowe(pozycja_wzgledna_x, pozycja_wzgledna_y);
                 }
             }
             else if (ucieczka == 2)
             {
-                predkosc_duszka_cz = 0.002f;
+                predkosc_duszka_cz = 0.0015f;
                 if (czy_wybrac_nowy_kierunek)
                 {
-
-                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
-
+                    skrzyzowanie_baza(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
                 }
             }
         }
@@ -320,6 +317,38 @@ void Blinky::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
     czy_wybrac_nowy_kierunek = false;
 }
 
+void Blinky::skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y)
+{
+    float najmniejsza_odleglosc = std::numeric_limits<float>::max();
+
+    if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y));
+            kierunek_nastepny = GORA;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
+
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = LEWO;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y));
+            kierunek_nastepny = DOL;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = PRAWO;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
 void Blinky::Animacja() {
     if (zegar_animacji_czerwony.getElapsedTime().asSeconds() >= 0.1f) {
         switch (ucieczka) {
@@ -389,11 +418,9 @@ void Blinky::Animacja() {
 
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Pinky - rozowy - blokuje droge
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 void Pinky::Ruch() {
@@ -440,11 +467,11 @@ void Pinky::Ruch() {
             }
             else if (ucieczka == 2)
             {
-                predkosc_duszka_r = 0.002f;
+                predkosc_duszka_r = 0.0015f;
                 if (czy_wybrac_nowy_kierunek)
                 {
 
-                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+                    skrzyzowanie_baza(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
 
                 }
             }
@@ -719,6 +746,38 @@ void Pinky::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
     czy_wybrac_nowy_kierunek = false;
 }
 
+void Pinky::skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y)
+{
+    float najmniejsza_odleglosc = std::numeric_limits<float>::max();
+
+    if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y));
+            kierunek_nastepny = GORA;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
+
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = LEWO;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y));
+            kierunek_nastepny = DOL;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = PRAWO;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
 void Pinky::Animacja() {
     if (zegar_animacji_rozowy.getElapsedTime().asSeconds() >= 0.1f) {
         switch (ucieczka) {
@@ -791,8 +850,6 @@ void Pinky::Animacja() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
 void Inky::Ruch() {
     float szerokosc_boku = ((float)rozmiar_gry.x - tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y)) / (float)2;                //szerokosc obszaru miedzy mapa a krawedzia okna
     float szerokosc_kratki = tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)28;                                      //szerokosc kratki na mapie logicznej
@@ -804,7 +861,7 @@ void Inky::Ruch() {
     float pozycja_wzgledna_x_gracza = ((gracz1.postac.sprajt.getPosition().x + (gracz1.postac.sprajt.getTextureRect().width / 2)) - szerokosc_boku) / szerokosc_kratki;          //pozycja horyzontalna na mapie logicznej
     float pozycja_wzgledna_y_gracza = ((gracz1.postac.sprajt.getPosition().y + (gracz1.postac.sprajt.getTextureRect().height / 2))) / wysokosc_kratki;                           //pozycja wertykalna na mapie logicznej
 
-    if (start == false and gracz1.Ilosc_punktow > 5)
+    if (start == false and gracz1.Ilosc_punktow > 30)
     {
         kierunek_aktualny = PRAWO;
         start = true;
@@ -840,11 +897,11 @@ void Inky::Ruch() {
             }
             else if (ucieczka == 2)
             {
-                predkosc_duszka_n = 0.002f;
+                predkosc_duszka_n = 0.0015f;
                 if (czy_wybrac_nowy_kierunek)
                 {
 
-                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+                    skrzyzowanie_baza(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
 
                 }
             }
@@ -1132,6 +1189,38 @@ void Inky::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
     czy_wybrac_nowy_kierunek = false;
 }
 
+void Inky::skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y)
+{
+    float najmniejsza_odleglosc = std::numeric_limits<float>::max();
+
+    if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y));
+            kierunek_nastepny = GORA;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
+
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = LEWO;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y));
+            kierunek_nastepny = DOL;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = PRAWO;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
 void Inky::Animacja() {
     if (zegar_animacji_niebieski.getElapsedTime().asSeconds() >= 0.1f) {
         switch (ucieczka) {
@@ -1204,7 +1293,6 @@ void Inky::Animacja() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
 void Clyde::Ruch() {
     float szerokosc_boku = ((float)rozmiar_gry.x - tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y)) / (float)2;                //szerokosc obszaru miedzy mapa a krawedzia okna
     float szerokosc_kratki = tlo.tekstura.getSize().x * ((float)rozmiar_gry.y / tlo.tekstura.getSize().y) / (float)28;                                      //szerokosc kratki na mapie logicznej
@@ -1218,7 +1306,7 @@ void Clyde::Ruch() {
 
     //std::cout << odleglosc_od_kratki_x <<" "<< odleglosc_od_kratki_y <<" "<< pozycja_wzgledna_x <<" "<< pozycja_wzgledna_y << std::endl;
 
-    if (start == false and gracz1.Ilosc_punktow > 10)
+    if (start == false and gracz1.Ilosc_punktow > 80)
     {
         kierunek_aktualny = LEWO;
         start = true;
@@ -1254,11 +1342,11 @@ void Clyde::Ruch() {
             }
             else if (ucieczka == 2)
             {
-                predkosc_duszka_p = 0.002f;
+                predkosc_duszka_p = 0.0015f;
                 if (czy_wybrac_nowy_kierunek)
                 {
 
-                    skrzyzowanie(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
+                    skrzyzowanie_baza(pozycja_wzgledna_x, pozycja_wzgledna_y, 14, 11.5);
 
                 }
             }
@@ -1540,6 +1628,38 @@ void Clyde::skrzyzowanie_losowe(float pozycja_x, float pozycja_y)
                 czy_zmienic_kierunek = false;
             }
             break;
+        }
+    }
+    czy_wybrac_nowy_kierunek = false;
+}
+
+void Clyde::skrzyzowanie_baza(float pozycja_x, float pozycja_y, float pozycja_powrotu_x, float pozycja_powrotu_y)
+{
+    float najmniejsza_odleglosc = std::numeric_limits<float>::max();
+
+    if ((poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y - 1][(int)pozycja_x] == '?') and kierunek_aktualny != DOL) {           //GORA
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y - 1) - pozycja_powrotu_y) * abs((pozycja_y - 1) - pozycja_powrotu_y));
+            kierunek_nastepny = GORA;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x - 1] == '?') and kierunek_aktualny != PRAWO) {           //LEWO
+
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x - 1) - pozycja_powrotu_x) * abs(pozycja_x - 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = LEWO;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '0' || poziom_1_skrzyzowania[(int)pozycja_y + 1][(int)pozycja_x] == '?') and kierunek_aktualny != GORA) {           //DOL
+        if (najmniejsza_odleglosc > sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs(pozycja_x - pozycja_powrotu_x) * abs(pozycja_x - pozycja_powrotu_x) + abs((pozycja_y + 1) - pozycja_powrotu_y) * abs((pozycja_y + 1) - pozycja_powrotu_y));
+            kierunek_nastepny = DOL;
+        }
+    }
+    if ((poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '0' || poziom_1_skrzyzowania[(int)pozycja_y][(int)pozycja_x + 1] == '?') and kierunek_aktualny != LEWO) {             //PRAWO
+        if (najmniejsza_odleglosc > sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y))) {
+            najmniejsza_odleglosc = sqrt(abs((pozycja_x + 1) - pozycja_powrotu_x) * abs(pozycja_x + 1 - pozycja_powrotu_x) + abs(pozycja_y - pozycja_powrotu_y) * abs(pozycja_y - pozycja_powrotu_y));
+            kierunek_nastepny = PRAWO;
         }
     }
     czy_wybrac_nowy_kierunek = false;
