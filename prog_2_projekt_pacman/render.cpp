@@ -59,7 +59,7 @@ void Game::Render()                                     // \brief Metoda renderu
 void Game::Menu_Render()                                //Metoda renderujaca menu
 {
     logo.sprajt.setScale(0.5, 0.5);
-    logo.sprajt.setPosition(rozmiar_menu.x / (float)2 - (logo.tekstura.getSize().x / 4), rozmiar_menu.y / (float)10);                                  //ustawienie pozycji na srodku, zalezne od uzytej wczesniej skali
+    logo.sprajt.setPosition(rozmiar_menu.x / (float)2 - (logo.tekstura.getSize().x / 4), rozmiar_menu.y / (float)10);                                   //ustawienie pozycji na srodku, zalezne od uzytej wczesniej skali
     this->okno_aplikacji.clear(sf::Color::White);
     this->okno_aplikacji.draw(logo.sprajt);
     start.sprajt.setScale(0.5, 0.5);
@@ -75,7 +75,7 @@ void Game::Game_Render()                                                    //Me
     
     if (stan_gry == 0)                                                      //stan gdy gra dziala normalnie
     {
-    this->okno_aplikacji.clear(sf::Color::Blue);
+    this->okno_aplikacji.clear(sf::Color::Blue);                            //wyczysczenie okna przed ponownym narysowaniem
     this->okno_aplikacji.draw(tlo.sprajt);                                  //rysowanie tla
 
     for (int i = 0; i < 4; i++) {                                           //rysowanie boosterow
@@ -84,24 +84,25 @@ void Game::Game_Render()                                                    //Me
     for (int i = 0; i < 242; i++) {                                         //rysowanie punktow
         this->okno_aplikacji.draw(punkt[i].punkt.sprajt);
     }
+                                                                            //rysowanie przeciwnikow i gracza
     this->okno_aplikacji.draw(czerwony.czerwony.sprajt);
     this->okno_aplikacji.draw(rozowy.rozowy.sprajt);
     this->okno_aplikacji.draw(niebieski.niebieski.sprajt);
     this->okno_aplikacji.draw(pomaranczowy.pomaranczowy.sprajt);
-    this->okno_aplikacji.draw(gracz1.postac.sprajt);                        //rysowanie gracza
-
+    this->okno_aplikacji.draw(gracz1.postac.sprajt);
+                                                                            //aktualizacja wyswietlania zdobytych pukntow
     zdobyte_punkty.setString("Punkty\n"+std::to_string(gracz1.Ilosc_punktow)+"/242");
 
     this->okno_aplikacji.draw(zdobyte_punkty);
     }
-    else if (stan_gry == 1)                                                 //stan gdy gracz wygral
+    else if (stan_gry == 1)                                                 //wypisanie informacji gdy gracz wygral
     {
         okno_aplikacji.clear(sf::Color::White);
         komunikat.setFillColor(sf::Color::Green);
         komunikat.setString("Wygrana!\nnacisnij spacje aby kontynuowac...");
         okno_aplikacji.draw(komunikat);
     }
-    else if (stan_gry == 2)                                                 //stan gdy gracz przegral
+    else if (stan_gry == 2)                                                 //wypisanie informacji gdy gracz przegral
     {
         okno_aplikacji.clear(sf::Color::White);
         komunikat.setFillColor(sf::Color::Red);
@@ -115,11 +116,11 @@ void Game::warunki_pomocnicze()
 {
     if (gracz1.kierunek_nastepny != STOP)                                   //oczekiwanie, az gracz ruszy
     {
-        gra_aktywna = true;
+        gra_aktywna = true;                                                 //wystartowanie gry
     }
     if (gracz1.Ilosc_punktow == 242)                                        //sprawdzenie czy gracz zebral wszystkie punkty
     {
-        stan_gry = 1;
+        stan_gry = 1;                                                       //zmiana stanu na wygrana
     }
 }
 

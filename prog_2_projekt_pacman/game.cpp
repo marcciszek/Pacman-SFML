@@ -16,9 +16,7 @@ void PacMan::Ruch_postaci() {
     float pozycja_wzgledna_y = ((postac.sprajt.getPosition().y + (postac.sprajt.getTextureRect().height / 2))) / wysokosc_kratki;                           //pozycja wertykalna na mapie logicznej
     float odleglosc_od_kratki_x = pozycja_wzgledna_x - floor(pozycja_wzgledna_x);                                                                           //odleglosc horyzontalna od srodka gracza do krawedzi kratki logicznej
     float odleglosc_od_kratki_y = pozycja_wzgledna_y - floor(pozycja_wzgledna_y);                                                                           //odleglosc wertykalna od srodka gracza do krawedzi kratki logicznej
-    //std::cout << pozycja_wzgledna_x << " " << pozycja_wzgledna_y << std::endl;
-    //switch ten odpowiedzialny jest za sprawdzenie, czy ostatni kierunek wybrany przez gracza jest mozliwy do realizacji, jesli tak to ustawia odpowiedni kierunek postaci
-
+    
     Kontakt_z_przeciwnikiem((int)pozycja_wzgledna_x, (int)pozycja_wzgledna_y);
 
     if (zegar_boost.getElapsedTime().asSeconds() >= 6.0f) {
@@ -37,10 +35,11 @@ void PacMan::Ruch_postaci() {
         }
     }
 
+    //switch ten odpowiedzialny jest za sprawdzenie, czy ostatni kierunek wybrany przez gracza jest mozliwy do realizacji, jesli tak to ustawia odpowiedni kierunek postaci
     switch (this->kierunek_nastepny)
     {
     case PRAWO:
-        if (odleglosc_od_kratki_y >= 0.48f and odleglosc_od_kratki_y <= 0.52f)                                                                                   //sprawdzenie czy jestesmy na srodku kratki
+        if (odleglosc_od_kratki_y >= 0.48f and odleglosc_od_kratki_y <= 0.52f)                                                                                     //sprawdzenie czy jestesmy na srodku kratki
         {
             if (poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] != '-' and poziom_1[(int)pozycja_wzgledna_y][(int)pozycja_wzgledna_x + 1] != '9')   //sprawdzenie czy mozliwy jest ruch
             {
